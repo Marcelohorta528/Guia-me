@@ -20,3 +20,6 @@ services:
         value: "150"
       - key: USE_SQLITE
         value: "1"
+      # Preencha no painel Render após criar credencial Google (ver DEPLOY-HOSPEDAGEM.md):
+      # - key: GOOGLE_CLIENT_ID
+      #   value: "xxxx.apps.googleusercontent.com"

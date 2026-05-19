@@ -335,6 +335,9 @@ export function loginAccount(telefone, password) {
     const phone = normalizePhone(telefone);
     const acc = store.accounts.find((a) => a.telefone === phone);
     if (!acc) throw new Error('Celular ou senha incorretos');
+    if (!acc.password_hash || !acc.password_salt) {
+      throw new Error('Esta conta usa login com Google. Toque em «Continuar com Google».');
+    }
     const saltBuf = Buffer.from(acc.password_salt, 'hex');
     const { hash } = hashPassword(password, saltBuf);
     const a = Buffer.from(hash, 'hex');
@@ -345,6 +348,99 @@ export function loginAccount(telefone, password) {
     store.sessions[token] = { accountId: acc.id, exp: Date.now() + SESSION_TTL_MS };
     await writeStore(store);
     return { token, tipo: acc.tipo, accountId: acc.id };
+  });
+}
+
+function findAccountByGoogle(store, sub, email) {
+  return store.accounts.find((a) => {
+    if (a.google_sub && a.google_sub === sub) return true;
+    const pe = String(a.perfil?.google_email || a.perfil?.email || '')
+      .trim()
+      .toLowerCase();
+    return pe && pe === email;
+  });
+}
+
+function defaultPerfilGoogle(tipo, profile) {
+  const agoraIso = new Date().toISOString();
+  const base = {
+    google_email: profile.email,
+    nome: profile.name,
+    foto_url: profile.picture,
+    biometria_face_at: agoraIso,
+    biometria_face_ciclo_dias: BIOMETRIA_CICLO_DIAS_PADRAO,
+    biometria_face_metodo: 'google_signin',
+    preferencia_pagamento: 'saldo',
+    cartao_cadastrado: true,
+    cartao_ultimos4: '4242',
+  };
+  const saldoCli = process.env.CLIENTE_SALDO_INICIAL_DEV;
+  const saldoPre = process.env.PRESTADOR_SALDO_INICIAL_DEV;
+  if (tipo === 'cliente') {
+    base.saldo_reais =
+      saldoCli && Number.isFinite(Number(saldoCli)) ? Math.round(Number(saldoCli) * 100) / 100 : 0;
+    base.documento_tipo = 'Conta Google';
+    base.documento_id = profile.sub.slice(0, 32);
+  } else {
+    base.saldo_reais =
+      saldoPre && Number.isFinite(Number(saldoPre)) ? Math.round(Number(saldoPre) * 100) / 100 : 0;
+    base.cidade_base = 'Rio de Janeiro — RJ';
+    base.bairros = ['Copacabana'];
+    base.categorias = ['Eletricista'];
+    base.cnpj = '00000000000191';
+  }
+  return base;
+}
+
+/** Login ou registo rápido com conta Google (JWT do botão GIS). */
+export function loginWithGoogle(tipo, googleProfile) {
+  return runExclusive(async () => {
+    const store = await readStore();
+    const want = tipo === 'prestador' ? 'prestador' : 'cliente';
+    const sub = String(googleProfile.sub || '');
+    const email = String(googleProfile.email || '').toLowerCase();
+    if (!sub || !email) throw new Error('Perfil Google incompleto');
+
+    let acc = findAccountByGoogle(store, sub, email);
+    const agoraIso = new Date().toISOString();
+    let created = false;
+
+    if (acc) {
+      if (acc.tipo !== want) {
+        throw new Error(
+          want === 'cliente'
+            ? 'Esta conta Google está registada como prestador. Use /prestador/login.html'
+            : 'Esta conta Google está registada como cliente. Use /cliente/login.html',
+        );
+      }
+      acc.google_sub = sub;
+      acc.perfil = acc.perfil || {};
+      acc.perfil.google_email = email;
+      if (googleProfile.name) acc.perfil.nome = googleProfile.name;
+      if (googleProfile.picture) acc.perfil.foto_url = googleProfile.picture;
+      acc.perfil.biometria_face_at = acc.perfil.biometria_face_at || agoraIso;
+    } else {
+      const id = randomUUID();
+      acc = {
+        id,
+        tipo: want,
+        telefone: '',
+        google_sub: sub,
+        password_hash: null,
+        password_salt: null,
+        perfil: defaultPerfilGoogle(want, { ...googleProfile, sub }),
+        createdAt: agoraIso,
+        auth_provider: 'google',
+      };
+      store.accounts.push(acc);
+      created = true;
+    }
+
+    const token = randomBytes(32).toString('hex');
+    pruneSessions(store);
+    store.sessions[token] = { accountId: acc.id, exp: Date.now() + SESSION_TTL_MS };
+    await writeStore(store);
+    return { token, tipo: acc.tipo, accountId: acc.id, created };
   });
 }
 

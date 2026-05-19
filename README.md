@@ -10,7 +10,7 @@ Protótipo web com o mesmo **objetivo de produto** que iFood e Uber: o cliente e
 | **Servidor** | **Node.js 18+**, módulos ES (`import`), **sem dependências npm**. |
 | **API** | `server/index.mjs` — estáticos + rotas JSON na porta **3333** (ou `PORT`). |
 | **Dados** | `server/store.mjs` — **`server/data/store.json`**: contas (**scrypt**), OTP dev, sessões, array **`reviews`**, **`orderMessages`** (chat por pedido). **Pedidos**: por omissão em `store.orders` no mesmo JSON; com **`USE_SQLITE=1`** (e Node **22.5+**), ficheiro SQLite gratuito **`server/data/guiame.db`** (`server/sqlite-orders.mjs`, módulo nativo `node:sqlite`). |
-| **Auth** | `POST /api/auth/login`, `GET /api/auth/me` (header `Authorization: Bearer <token>`). Login em `/cliente/login.html` e `/prestador/login.html`. Reverificação facial: `POST /api/auth/biometria-renovar`, páginas `renovar-biometria.html` em cada app. |
+| **Auth** | `POST /api/auth/login`, `POST /api/auth/google`, `GET /api/auth/google-config`, `GET /api/auth/me` (header `Authorization: Bearer <token>`). Login em `/cliente/login.html` e `/prestador/login.html` (celular/senha ou **Continuar com Google** se `GOOGLE_CLIENT_ID` estiver no `.env`). Reverificação facial: `POST /api/auth/biometria-renovar`, páginas `renovar-biometria.html` em cada app. Configuração OAuth: `DEPLOY-HOSPEDAGEM.md`. |
 | **KYC (futuro)** | `server/kyc.mjs` + **`KYC-INTEGRACAO.md`**. Webhook stub: `POST /api/kyc/webhook`. Variáveis: `server/.env.example` (secção KYC). |
 | **SMS (dev)** | `POST /api/sms/dev-send` — gera código de 6 dígitos, regista no store, imprime no **terminal**; opcional **Twilio** se `TWILIO_*` estiver definido (`server/sms.mjs`). |
 
@@ -46,6 +46,8 @@ Para um link **HTTPS** público (demo no telemóvel, clientes, investidores), si
 | GET | `/api/pedidos/<uuid>/messages` | Bearer — **cliente** (dono) ou **prestador** (atribuído ao pedido ou em fila `novo` com match de área/serviços) → `{ mensagens: [{ id, body, createdAt, authorTipo, authorLabel }] }` |
 | POST | `/api/pedidos/<uuid>/messages` | Bearer + JSON `{ "body": "..." }` (ou `texto`) — grava mensagem em **`store.json` → `orderMessages`** |
 | POST | `/api/auth/login` | `{ "celular", "password" }` → `{ token, tipo, accountId }` |
+| GET | `/api/auth/google-config` | `{ enabled, clientId }` — ID público para o botão GIS |
+| POST | `/api/auth/google` | `{ "tipo": "cliente"\|"prestador", "credential": "<id_token>" }` → `{ token, ... }` |
 | GET | `/api/auth/me` | Bearer token → dados da conta + estado `biometriaFacial` |
 | POST | `/api/auth/biometria-renovar` | Bearer + `{ "biometriaFaceOk": "1", "biometriaFaceMetodo" }` — reverificação mensal |
 | POST | `/api/kyc/webhook` | **Stub** para o fornecedor KYC (ver `KYC-INTEGRACAO.md`) |

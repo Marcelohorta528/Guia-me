@@ -41,6 +41,8 @@
                 <button type="button" class="cad-btn-primary" id="login-btn">Entrar</button>
             </div>
 
+            <div data-google-login data-app-tipo="prestador" data-redirect="/prestador/" style="margin-top: 8px"></div>
+
             <pre id="login-result" class="cad-legal" style="margin-top: 20px; white-space: pre-wrap; word-break: break-all; display: none"></pre>
 
             <section id="login-av-wrap" style="display: none; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--color-border)">
@@ -81,6 +83,7 @@
     </div>
 
     <script src="/shared/cadastro-password-toggle.js"></script>
+    <script src="/shared/google-auth-login.js"></script>
     <script>
       function mascaraCpfOuCnpj(val) {
         const d = String(val || '').replace(/\D/g, '');

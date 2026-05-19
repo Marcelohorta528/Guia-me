@@ -12,6 +12,7 @@ import {
   setDevOtp,
   registerCadastro,
   loginAccount,
+  loginWithGoogle,
   getSession,
   normalizePhone,
   addReview,
@@ -35,6 +36,7 @@ import {
 import { handleKycWebhookRequest } from './kyc.mjs';
 import { sendTwilioOtpSms } from './sms.mjs';
 import { initOrdersSqlite, ordersSqliteStatus } from './sqlite-orders.mjs';
+import { getGoogleClientId, verifyGoogleIdToken } from './google-auth.mjs';
 
 await initOrdersSqlite();
 
@@ -413,6 +415,26 @@ const server = http.createServer(async (req, res) => {
       const body = parseJson(raw);
       const out = await loginAccount(body.celular, body.password);
       json(res, 200, { ok: true, ...out });
+    } catch (e) {
+      json(res, 401, { ok: false, error: String(e?.message || e) });
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && url.pathname === '/api/auth/google-config') {
+    const clientId = getGoogleClientId();
+    json(res, 200, { ok: true, enabled: !!clientId, clientId: clientId || null });
+    return;
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/auth/google') {
+    try {
+      const raw = await readBody(req);
+      const body = parseJson(raw);
+      const tipo = body.tipo === 'prestador' ? 'prestador' : 'cliente';
+      const profile = await verifyGoogleIdToken(body.credential || body.id_token);
+      const out = await loginWithGoogle(tipo, profile);
+      json(res, 200, { ok: true, ...out, provider: 'google' });
     } catch (e) {
       json(res, 401, { ok: false, error: String(e?.message || e) });
     }

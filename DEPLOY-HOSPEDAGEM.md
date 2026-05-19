@@ -16,22 +16,16 @@ Guia para colocar o projeto **online com HTTPS** (link para terceiros testarem n
 
 ---
 
-## Passo 1 — Subir o código para o GitHub
+## Passo 1 — Subir o código para o GitHub (automático)
 
-1. Crie um repositório **novo** no GitHub (ex.: `guia-me-service`), **vazio**, sem README.
-2. No PC, na pasta `app-servico`:
+Na pasta `app-servico`, execute:
 
 ```powershell
 cd "d:\Marcelo\TUDO\Marketing Digital\Cursor\app-servico"
-git init
-git add .
-git commit -m "Guia-me Service — MVP para deploy"
-git branch -M main
-git remote add origin https://github.com/SEU_USUARIO/guia-me-service.git
-git push -u origin main
+.\publicar-guia-me.ps1
 ```
 
-Substitua `SEU_USUARIO` pelo seu utilizador GitHub.
+O script instala Git/GitHub CLI se faltar, abre login no browser, cria o repo **`guia-me-service`** e faz push. Código em `%USERPROFILE%\guia-me-service-deploy`.
 
 **Nota:** `server/data/store.json` e `guiame.db` estão no `.gitignore` (correto — cada ambiente cria os seus dados).
 
@@ -67,6 +61,7 @@ Substitua `SEU_USUARIO` pelo seu utilizador GitHub.
 | `CLIENTE_SALDO_INICIAL_DEV` | `100` | Saldo inicial cliente (testes) |
 | `PRESTADOR_SALDO_INICIAL_DEV` | `150` | Saldo inicial prestador |
 | `USE_SQLITE` | `1` | Pedidos em ficheiro SQLite *(opcional; sem isto usa JSON em memória/disco)* |
+| `GOOGLE_CLIENT_ID` | *(opcional)* | Botão «Continuar com Google» nas páginas de login |
 
 4. **Health Check Path:** `/api/health`
 5. **Create Web Service** e aguarde o primeiro deploy (2–5 min).
@@ -100,11 +95,53 @@ Roteiro completo: `TESTE-FLUXO-PEDIDO-API.md` (troque `localhost:3333` pelo seu 
 
 ---
 
+## Login com Google (opcional)
+
+Nas páginas `/cliente/login.html` e `/prestador/login.html` aparece **Continuar com Google** quando o servidor tem `GOOGLE_CLIENT_ID` configurado.
+
+### 1 — Google Cloud Console
+
+1. Aceda a [Google Cloud Console](https://console.cloud.google.com/) → **APIs e serviços** → **Credenciais**.
+2. **Criar credenciais** → **ID do cliente OAuth** → tipo **Aplicativo da Web**.
+3. **Origens JavaScript autorizadas** (adicione todas as que usar):
+   - `http://localhost:3333` (desenvolvimento)
+   - `https://SEU-APP.onrender.com` (produção — sem barra no fim)
+4. Copie o **ID do cliente** (termina em `.apps.googleusercontent.com`).
+
+Não é obrigatório configurar URI de redirecionamento para este fluxo (Google Identity Services com botão + `id_token`).
+
+### 2 — Variável no servidor
+
+**Local** — em `server/.env`:
+
+```env
+GOOGLE_CLIENT_ID=123456789-xxxx.apps.googleusercontent.com
+```
+
+Reinicie `npm start`.
+
+**Render** — painel do serviço → **Environment** → adicione:
+
+| Chave | Valor |
+|--------|--------|
+| `GOOGLE_CLIENT_ID` | o ID copiado do passo 1 |
+
+Faça **Manual Deploy** ou um novo push para aplicar.
+
+### 3 — Comportamento (MVP)
+
+- Primeiro login Google **cria conta** no tipo da página (cliente ou prestador).
+- Conta Google e conta por celular/senha são perfis separados, salvo coincidência futura por e-mail.
+- Conta criada só com Google não aceita senha no login tradicional (mensagem explícita na API).
+
+---
+
 ## Variáveis úteis (produção / demo)
 
 Copie de `server/.env.example`. No Render, use o painel **Environment**, não commite `.env`.
 
 - `SKIP_OTP=1` — só para **demo**; em produção real use SMS (Twilio) e remova.
+- `GOOGLE_CLIENT_ID` — login com Google (ver secção acima).
 - `FX_USD_BRL=5.90` — câmbio fixo para testes de taxa US$.
 - `TWILIO_*` — SMS real (ver `.env.example`).
 
