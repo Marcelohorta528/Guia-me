@@ -1,0 +1,22 @@
+# Blueprint Render (plano gratuito) — https://render.com
+# Conecte o repositório Git e use "Blueprint" ou crie Web Service manualmente com estes valores.
+services:
+  - type: web
+    name: guia-me-service
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: ""
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SKIP_OTP
+        value: "1"
+      - key: CLIENTE_SALDO_INICIAL_DEV
+        value: "100"
+      - key: PRESTADOR_SALDO_INICIAL_DEV
+        value: "150"
+      - key: USE_SQLITE
+        value: "1"

@@ -1,0 +1,250 @@
+.proto-body {
+    min-height: 100vh;
+    margin: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, #2a2418 0%, var(--color-bg) 55%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+    gap: 20px;
+}
+
+.proto-chrome {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.proto-chrome-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.proto-chrome-link {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.proto-chrome-link:hover {
+    text-decoration: underline;
+}
+
+.proto-phone {
+    width: 100%;
+    max-width: 390px;
+    min-height: min(720px, calc(100vh - 120px));
+    background: var(--color-bg-soft);
+    border-radius: 36px;
+    border: 1px solid var(--color-border);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 24px 80px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+.proto-notch {
+    height: 28px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #111 0%, var(--color-bg-soft) 100%);
+    border-radius: 36px 36px 0 0;
+}
+
+.proto-top {
+    padding: 0 16px 12px;
+    flex-shrink: 0;
+}
+
+.proto-role {
+    display: flex;
+    padding: 4px;
+    background: var(--color-bg);
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    gap: 4px;
+}
+
+.proto-role-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.proto-role-btn--active {
+    background: var(--color-accent);
+    color: #1a1508;
+}
+
+.proto-role-btn:not(.proto-role-btn--active):hover {
+    color: var(--color-text);
+}
+
+.proto-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0 16px 20px;
+}
+
+.proto-view[hidden] {
+    display: none !important;
+}
+
+.proto-progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-bottom: 16px;
+}
+
+.proto-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.proto-dot--active {
+    background: var(--color-accent);
+    transform: scale(1.15);
+}
+
+.proto-steps {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+}
+
+.proto-step {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    animation: proto-fade 0.28s ease;
+    flex: 1;
+    min-height: 0;
+}
+
+.proto-step:not([hidden]) {
+    display: flex;
+}
+
+@keyframes proto-fade {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.proto-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.25;
+}
+
+.proto-title--sm {
+    font-size: 1.15rem;
+}
+
+.proto-sub {
+    margin: 0 0 4px;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.proto-chips {
+    margin-top: 4px;
+}
+
+.proto-btn-full {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 8px;
+}
+
+.proto-nav-row {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.proto-btn-half {
+    flex: 1;
+}
+
+.proto-list {
+    margin-top: 4px;
+}
+
+.proto-step--success {
+    align-items: center;
+    text-align: center;
+    padding-top: 32px;
+}
+
+.proto-success-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(232, 197, 71, 0.15);
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.proto-scroll {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 8px;
+}
+
+.proto-panel {
+    margin-bottom: 0;
+}
+
+.proto-map-osm {
+    height: 160px;
+    min-height: 140px;
+    flex-shrink: 0;
+}
+
+.proto-list .mini-card {
+    align-items: flex-start;
+}
+
+.proto-list .review-quote {
+    font-size: 0.78rem;
+    padding-left: 10px;
+}

@@ -1,0 +1,1299 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia-me · App Prestador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+    <link rel="stylesheet" href="/shared/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav nav--with-app-menu container">
+            <div class="nav-leading">
+                <button type="button" class="app-account-trigger" aria-controls="app-drawer-prestador" aria-expanded="false" aria-label="Abrir menu da conta">
+                    <span class="app-account-trigger__avatar" aria-hidden="true">P</span>
+                </button>
+            </div>
+            <a href="/prestador/" class="logo"><span class="logo-mark">Guia-me</span> Prestador</a>
+            <ul class="nav-links">
+                <li><a href="cadastro.html">Criar conta</a></li>
+                <li><a href="/">Portal</a></li>
+                <li><a href="/cliente/" class="btn-nav">App cliente</a></li>
+            </ul>
+            <button type="button" class="menu-toggle" aria-label="Abrir menu">☰</button>
+        </nav>
+    </header>
+
+    <div id="app-drawer-prestador" class="app-drawer" data-app-account-drawer hidden aria-hidden="true">
+        <div class="app-drawer__backdrop"></div>
+        <aside class="app-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="app-drawer-prestador-heading">
+            <div class="app-drawer__top">
+                <div>
+                    <p class="app-drawer__brand">Guia-me Service</p>
+                    <h2 id="app-drawer-prestador-heading" class="app-drawer__title">Prestador</h2>
+                    <p class="app-drawer__subtitle">Conta, empresa e ganhos</p>
+                </div>
+                <button type="button" class="app-drawer__close" aria-label="Fechar menu">×</button>
+            </div>
+            <nav class="app-drawer__nav" aria-label="Menu da conta">
+                <ul class="app-drawer__list">
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-conta"><span class="app-drawer__icon" aria-hidden="true">👤</span> Conta</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-pagamentos"><span class="app-drawer__icon" aria-hidden="true">💳</span> Pagamentos e repasses</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-nf-recibo"><span class="app-drawer__icon" aria-hidden="true">📄</span> NF e recibos</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-relatorios"><span class="app-drawer__icon" aria-hidden="true">📊</span> Relatórios e pedidos</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-dados"><span class="app-drawer__icon" aria-hidden="true">🪪</span> Dados pessoais</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-cnpj"><span class="app-drawer__icon" aria-hidden="true">🏢</span> CNPJ e empresa</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-logomarca"><span class="app-drawer__icon" aria-hidden="true">🏷️</span> Logomarca</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-foto-responsavel"><span class="app-drawer__icon" aria-hidden="true">📷</span> Foto do responsável</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-mapa-km"><span class="app-drawer__icon" aria-hidden="true">🗺️</span> Mapa e quilometragem</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-fila-pedidos"><span class="app-drawer__icon" aria-hidden="true">📋</span> Fila de espera</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-area"><span class="app-drawer__icon" aria-hidden="true">📍</span> Área e serviços</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="login.html"><span class="app-drawer__icon" aria-hidden="true">⎆</span> Entrar</a></li>
+                </ul>
+            </nav>
+            <p class="app-drawer__foot">Referência visual tipo Uber: saltos para secções desta página; num app, cada item seria um ecrã próprio.</p>
+        </aside>
+    </div>
+
+    <main class="flow container">
+        <h1 class="flow-title">Fluxo do <em>prestador</em></h1>
+        <p class="flow-intro">Você só recebe pedidos de clientes cuja <strong>cidade e bairro</strong> batem com a sua <strong>área de atendimento</strong> e com os <strong>serviços</strong> que cadastrou. Como na <strong>Uber</strong>, vê a <strong>nota e comentários</strong> do cliente e, depois do serviço, ambos se avaliam. A conversa com o cliente deve ser pelo <strong>chat do app</strong> (modelo OLX), com histórico na plataforma — ver <a href="README.md">README</a> (secção <em>Comunicação e chat</em>).</p>
+
+        <section class="panel app-account-hub" id="prestador-sec-conta">
+            <h2>Conta e preferências</h2>
+            <p class="muted small panel-note">Menu <strong>P</strong> no canto superior esquerdo (estilo Uber). Blocos abaixo espelham os itens principais do menu.</p>
+            <div class="app-account-hub__grid">
+                <article class="app-account-card app-account-card--wide" id="prestador-sec-nf-recibo">
+                    <h3>NF e recibos (concluir serviço)</h3>
+                    <p class="muted small">O serviço só fica <strong>concluído</strong> quando enviar a <strong>NF</strong> ou <strong>recibo</strong> em <strong>PDF</strong>. O cliente recebe o documento na conta dele com <strong>garantia de até 3 meses</strong>. Neste momento é debitada a sua taxa de fechamento (US$ 10 em real).</p>
+                    <label class="stack-label">Pedido
+                        <select id="prestador-nf-pedido-select" aria-label="Pedido para anexar NF ou recibo"></select>
+                    </label>
+                    <label class="stack-label" style="margin-top:0.75rem">Ficheiro PDF
+                        <input type="file" id="prestador-nf-file" data-file-accept="pdf" data-file-hint="prestador-nf-formatos-hint">
+                    </label>
+                    <span class="pedido-metragem-hint" id="prestador-nf-formatos-hint"></span>
+                    <button type="button" class="btn btn-small btn-primary" id="prestador-nf-enviar-btn" style="margin-top:0.5rem">Enviar NF/recibo e concluir serviço (garantia 3 meses)</button>
+                    <p class="muted small form-hint" id="prestador-nf-feedback" role="status" aria-live="polite"></p>
+                    <h4 class="muted small" style="margin-top:1rem">Enviados recentemente</h4>
+                    <ul class="app-nf-doc-list" id="prestador-nf-lista" aria-label="NF e recibos enviados"></ul>
+                </article>
+                <article class="app-account-card" id="prestador-sec-pagamentos">
+                    <h3>Pagamentos e repasses</h3>
+                    <p class="muted small"><strong>Cliente (no aceite):</strong> deslocamento <strong>R$ 2,00/km ida e volta</strong> + <strong>US$ 5</strong> plataforma em real (total discriminado). <strong>Você (ao concluir):</strong> taxa de <strong>US$ 10,00</strong> em real no saldo ou cartão. Ver <a href="README.md">README</a>.</p>
+                    <p class="muted small" id="prestador-pagamentos-cotacao" aria-live="polite">Cotação da taxa de fechamento: a carregar…</p>
+                    <p class="muted small" id="prestador-pagamentos-saldo" aria-live="polite"></p>
+                </article>
+                <article class="app-account-card" id="prestador-sec-dados">
+                    <h3>Dados pessoais</h3>
+                    <p class="muted small">Responsável legal, contacto e verificação de identidade (KYC) serão geridos aqui.</p>
+                </article>
+                <article class="app-account-card" id="prestador-sec-cnpj">
+                    <h3>CNPJ e empresa</h3>
+                    <p class="muted small">Razão social, nome fantasia, inscrição estadual e dados fiscais para NF e repasses — espelha o passo de CNPJ do cadastro de prestador.</p>
+                </article>
+                <article class="app-account-card app-account-card--wide" id="prestador-sec-logomarca">
+                    <h3>Logomarca</h3>
+                    <p class="muted small">Marca da sua empresa ou negócio — aparece na lista quando o cliente busca profissionais perto.</p>
+                    <div class="app-profile-photo">
+                        <div class="app-profile-photo__preview app-profile-photo__preview--logo" id="prestador-logomarca-preview" aria-live="polite">
+                            <span class="app-profile-photo__placeholder" aria-hidden="true">🏷️</span>
+                        </div>
+                        <div class="app-profile-photo__fields">
+                            <label class="stack-label" style="margin:0">
+                                <span class="pedido-metragem-hint">Enviar logomarca</span>
+                                <input type="file" data-file-accept="imagens-pdf" data-file-hint="prestador-logomarca-formatos-hint" data-profile-photo-input data-profile-photo-preview="prestador-logomarca-preview">
+                            </label>
+                            <span class="app-profile-photo__hint" id="prestador-logomarca-formatos-hint"></span>
+                            <span class="app-profile-photo__hint">Use fundo claro ou transparente. Proporção horizontal recomendada (ex.: 3:2).</span>
+                        </div>
+                    </div>
+                </article>
+                <article class="app-account-card app-account-card--wide" id="prestador-sec-foto-responsavel">
+                    <h3>Foto do responsável pelo serviço</h3>
+                    <p class="muted small">Rosto de quem atende o cliente (responsável técnico ou titular) — transmite confiança nas avaliações, como no Uber.</p>
+                    <div class="app-profile-photo">
+                        <div class="app-profile-photo__preview" id="prestador-foto-responsavel-preview" aria-live="polite">
+                            <span class="app-profile-photo__placeholder" aria-hidden="true">👤</span>
+                        </div>
+                        <div class="app-profile-photo__fields">
+                            <label class="stack-label" style="margin:0">
+                                <span class="pedido-metragem-hint">Enviar foto do responsável</span>
+                                <input type="file" data-file-accept="imagens" data-file-hint="prestador-foto-responsavel-formatos-hint" data-profile-photo-input data-profile-photo-preview="prestador-foto-responsavel-preview">
+                            </label>
+                            <span class="app-profile-photo__hint" id="prestador-foto-responsavel-formatos-hint"></span>
+                            <span class="app-profile-photo__hint">MVP: só pré-visualização. Futuro: validação facial alinhada ao cadastro KYC.</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="panel" id="prestador-sec-relatorios">
+            <h2>Relatórios e pedidos</h2>
+            <p class="muted small panel-note">Com <a href="login.html">sessão de prestador</a>, a fila e os pedidos aceites aparecem em <strong>Pedidos reais (API)</strong> mais abaixo; inclui aceite, orçamento e fechamento.</p>
+        </section>
+
+        <section class="panel" id="prestador-sec-mapa-km">
+            <h2>Mapa e quilometragem</h2>
+            <p class="muted small panel-note">Defina o <strong>ponto de partida</strong> (base) no mapa. Ícones no mapa = outros prestadores na região (<strong>só visual</strong>, sem endereço). <strong>Km máximo só ida</strong> que aceita deslocar; taxa <strong>R$&nbsp;2,00/km</strong> (ida e volta).</p>
+            <div class="form-row-2">
+                <label class="stack-label">Cidade base
+                    <select id="cidade-prestador" name="cidade">
+                        <option selected>Rio de Janeiro — RJ</option>
+                        <option>Niterói — RJ</option>
+                        <option>São Paulo — SP</option>
+                        <option>Belo Horizonte — MG</option>
+                    </select>
+                </label>
+                <label class="stack-label">Bairro base
+                    <select id="bairro-prestador" name="bairro">
+                        <option selected>Copacabana</option>
+                        <option>Ipanema</option>
+                        <option>Tijuca</option>
+                        <option>Centro</option>
+                    </select>
+                </label>
+            </div>
+            <p class="fake-map-zone" id="prestador-mapa-km-zone">Base: Copacabana (Rio de Janeiro)</p>
+            <div class="map-osm-wrap">
+                <button type="button" class="map-gps-btn" id="prestador-mapa-km-gps-btn" title="Minha localização" aria-label="Marcar base no GPS">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2"/></svg>
+                </button>
+                <div id="mapa-prestador-mapa-km-osm" class="map-osm" role="application" aria-label="Mapa da base do prestador"></div>
+            </div>
+            <p class="proto-map-legend muted">Pins de exemplo = pedidos na região. Use o GPS para marcar sua base.</p>
+            <label class="stack-label" style="margin-top: 1rem">Km máximo de deslocamento (só ida) <span class="pedido-metragem-hint">(até 150)</span>
+                <input type="number" id="prestador-km-max" name="km_max_deslocamento" min="0" max="150" step="0.5" value="30" inputmode="decimal" placeholder="Ex.: 30">
+            </label>
+            <p class="form-hint" id="prestador-km-preview" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="panel" id="prestador-sec-area">
+            <h2>Resumo do perfil</h2>
+            <div class="stat-row">
+                <div class="stat-box"><strong>87%</strong><span>Perfil completo</span></div>
+                <div class="stat-box"><strong>3</strong><span>Na fila de espera</span></div>
+                <div class="stat-box"><strong>4,8</strong><span>Sua nota (clientes)</span></div>
+            </div>
+            <p class="muted small">Mapa e km máx.: secção <a href="#prestador-sec-mapa-km"><strong>Mapa e quilometragem</strong></a>.</p>
+        </section>
+
+        <section class="panel">
+            <h2>Serviços e onde você aparece</h2>
+            <p class="muted small panel-note">Cliente te encontra por <strong>local + tipo de serviço</strong> e vê <strong>referência de preço</strong> (hora, diária ou fixo) se você cadastrou. Com pagamento pelo app (futuro), a política prevê <strong>R$ 2,00/km</strong> sobre <strong>ida e volta</strong> (a partir do km <strong>só ida</strong> no pedido), a favor do prestador, pago pelo cliente no <strong>cartão</strong> ou <strong>saldo</strong>; comissão da plataforma só sobre o valor do serviço — ver <a href="README.md">README</a>.</p>
+            <ul class="inline-badges">
+                <li>Eletricista</li>
+                <li>Instalação de ventilador</li>
+            </ul>
+            <p class="muted small spaced-top"><strong>Referência de preço no perfil:</strong> R$&nbsp;85/h · diária R$&nbsp;320 · visita típica R$&nbsp;120</p>
+            <p class="muted small spaced-top"><strong>Cidades:</strong> Rio de Janeiro (RJ)</p>
+            <p class="muted small"><strong>Bairros atendidos:</strong> Copacabana, Ipanema, Tijuca, Centro</p>
+        </section>
+
+        <section class="panel">
+            <h2>Avaliações que você recebeu</h2>
+            <p class="muted small panel-note">Comentários deixados por clientes após os serviços (simulação).</p>
+            <div class="rating-uber" title="4,8 de 5">
+                <span class="rating-stars" aria-hidden="true">★★★★★</span>
+                <span class="rating-value">4,8</span>
+                <span class="rating-count">· 214 avaliações</span>
+            </div>
+            <blockquote class="review-quote">“Chegou no horário combinado, material de qualidade.”<cite>— Carla · 5 ★ · há 6 dias</cite></blockquote>
+            <blockquote class="review-quote">“Resolveu, mas poderia explicar melhor o orçamento.”<cite>— Diego · 4 ★ · há 2 semanas</cite></blockquote>
+        </section>
+
+        <section class="panel">
+            <h2>Fila de espera (exemplo)</h2>
+            <p class="muted small panel-note">Solicitações <strong>aguardando aceite inicial</strong> antes da negociação. Cada cartão mostra a reputação do cliente (estilo Uber).</p>
+            <ul class="card-list">
+                <li class="mini-card mini-card--stack">
+                    <div class="mini-card__main">
+                        <strong>Cliente: Ana R.</strong>
+                        <div class="rating-uber rating-uber--compact" title="4,9 de 5">
+                            <span class="rating-stars" aria-hidden="true">★★★★★</span>
+                            <span class="rating-value">4,9</span>
+                            <span class="rating-count">28 serviços avaliados</span>
+                        </div>
+                        <blockquote class="review-quote">“Sempre pontual nos horários.”<cite>— Avaliação de outro prestador · há 1 mês</cite></blockquote>
+                        <span class="muted">Elétrica — Copacabana · Troca de disjuntor · Manhã · <strong>Cliente viu ref.</strong> R$&nbsp;85/h · <strong>18 m² · 2 fotos</strong></span>
+                    </div>
+                    <button type="button" class="btn btn-small btn-primary">Aceitar e iniciar negociação</button>
+                </li>
+                <li class="mini-card mini-card--stack">
+                    <div class="mini-card__main">
+                        <strong>Cliente: Bruno M.</strong>
+                        <div class="rating-uber rating-uber--compact" title="4,6 de 5">
+                            <span class="rating-stars" aria-hidden="true">★★★★★</span>
+                            <span class="rating-value">4,6</span>
+                            <span class="rating-count">11 serviços avaliados</span>
+                        </div>
+                        <span class="muted">Tomadas e luminária — Ipanema · Tarde · <strong>Ref.</strong> fixo R$&nbsp;180 · <strong>sem fotos</strong></span>
+                    </div>
+                    <button type="button" class="btn btn-small btn-primary">Aceitar e iniciar negociação</button>
+                </li>
+            </ul>
+            <p class="muted small" style="margin-top:0.75rem"><a href="#prestador-sec-fila-pedidos">↓ Pedidos reais (API)</a> com login — botões funcionais.</p>
+        </section>
+
+        <section class="panel" id="prestador-panel-pedidos-api">
+            <h2 id="prestador-sec-fila-pedidos">Fila de espera e pedidos</h2>
+            <p class="muted small panel-note">A <strong>fila de espera</strong> reúne solicitações <strong>aguardando o seu aceite inicial de negociação</strong>. Ao aceitar, passa a <strong>em negociação</strong>. Conclusão com <strong>NF/recibo PDF</strong>.</p>
+            <p class="panel-login-hint" id="prestador-pedidos-login-hint">Faça <a href="login.html">login como prestador</a> para carregar pedidos reais e usar os botões abaixo.</p>
+            <div id="prestador-pedidos-demo-wrap" class="pedido-demo-wrap">
+                <h3 class="muted small">Pré-visualização (sem login)</h3>
+                <ul class="card-list">
+                    <li class="mini-card mini-card--stack">
+                        <div class="mini-card__main">
+                            <strong>Pedido demo…</strong> <span class="tag tag--fila-espera">Fila de espera</span>
+                            <p class="muted small pedido-fila-hint">Aguardando aceite inicial de negociação.</p>
+                        </div>
+                        <button type="button" class="btn btn-small btn-primary">Aceitar e iniciar negociação</button>
+                        <button type="button" class="btn btn-small btn-secondary">Enviar proposta de orçamento</button>
+                        <button type="button" class="btn btn-small btn-secondary">Carregar mensagens (chat)</button>
+                        <button type="button" class="btn btn-small btn-primary">Enviar NF/recibo e concluir serviço</button>
+                    </li>
+                </ul>
+            </div>
+            <div id="prestador-pedidos-live-wrap" hidden aria-hidden="true">
+            <button type="button" class="btn btn-secondary" id="prestador-btn-refresh-pedidos">Atualizar lista</button>
+            <p class="form-hint" id="prestador-pedidos-api-feedback" role="status" aria-live="polite"></p>
+            <h3 class="muted small" style="margin-top: 1rem">Fila de espera — solicitações na sua área</h3>
+            <p class="form-hint pedido-fila-hint" style="margin-top: 6px">Pedidos e solicitações ficam aqui até o <strong>aceite inicial de negociação</strong>. Use <strong>Aceitar e iniciar negociação</strong> em cada cartão (cobrança do cliente: deslocamento + US$&nbsp;5).</p>
+            <ul class="card-list" id="prestador-pedidos-disponiveis-list"></ul>
+            <h3 class="muted small" style="margin-top: 1rem">Em negociação e concluídos</h3>
+            <ul class="card-list" id="prestador-meus-pedidos-list"></ul>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Disponibilidade (rascunho)</h2>
+            <div class="chips">
+                <button type="button" class="chip chip--active">Seg</button>
+                <button type="button" class="chip chip--active">Ter</button>
+                <button type="button" class="chip">Qua</button>
+                <button type="button" class="chip chip--active">Qui</button>
+                <button type="button" class="chip chip--active">Sex</button>
+                <button type="button" class="chip">Sábado</button>
+                <button type="button" class="chip">Domingo</button>
+            </div>
+            <p class="form-hint">Em produção isso salvaria preferências por dia e turno.</p>
+        </section>
+    </main>
+
+    <footer class="footer container">
+        <p><a href="/">← Portal Guia-me</a></p>
+    </footer>
+
+    <div id="prestador-alerta-novo-pedido" class="prestador-alerta-novo-pedido" hidden role="alert" aria-live="assertive">
+      <div class="prestador-alerta-novo-pedido__card">
+        <div class="prestador-alerta-novo-pedido__header">
+          <span class="prestador-alerta-novo-pedido__badge" aria-hidden="true">!</span>
+          <h3 class="prestador-alerta-novo-pedido__titulo">Nova solicitação na fila de espera</h3>
+        </div>
+        <div id="prestador-alerta-novo-pedido-conteudo" class="prestador-alerta-novo-pedido__conteudo"></div>
+        <p class="prestador-alerta-novo-pedido__nota muted small">O som e a vibração <strong>não substituem</strong> o modo silencioso nem outras definições do aparelho: o navegador e o sistema podem bloquear ou reduzir. Para alertas mais fiáveis no futuro, use <strong>notificações Push</strong> numa PWA ou app nativo.</p>
+        <div class="prestador-alerta-novo-pedido__acoes">
+          <label class="prestador-alerta-novo-pedido__poll muted small">
+            <input type="checkbox" id="prestador-alerta-auto-refresh" checked> Consultar novos pedidos na API a cada 45&nbsp;s (esta página aberta)
+          </label>
+          <button type="button" class="btn btn-primary" id="prestador-alerta-novo-pedido-fechar">Fechar aviso</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/shared/script.js"></script>
+    <script src="/shared/arquivos-aceitos.js"></script>
+    <script src="/shared/app-conta-drawer.js"></script>
+    <script src="/shared/app-profile-photo.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
+    <script src="/shared/mapa-localizacao.js"></script>
+    <script src="/shared/pedido-status-ui.js"></script>
+    <script src="/shared/pedido-fila-demo-ui.js"></script>
+    <script src="/shared/quilometragem-preview.js"></script>
+    <script src="/shared/chat-contato-bloqueado.js"></script>
+    <script src="/shared/taxa-aceite-ui.js"></script>
+    <script src="/shared/cobranca-aceite-preview.js"></script>
+    <script src="/shared/app-nf-recibo.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        window.GUIA_ME_mapaLocalizacao?.init({
+          mapId: 'mapa-prestador-mapa-km-osm',
+          gpsBtnId: 'prestador-mapa-km-gps-btn',
+          zoneId: 'prestador-mapa-km-zone',
+          pins: window.GUIA_ME_mapaLocalizacao.PINS_RIO_EXEMPLO,
+          establishmentsNearUser: true,
+          cidadeId: 'cidade-prestador',
+          bairroId: 'bairro-prestador',
+          zonePrefix: 'Base',
+          userPopup: 'Sua base / ponto de partida',
+        });
+        window.GUIA_ME_quilometragem?.bind({
+          inputId: 'prestador-km-max',
+          previewId: 'prestador-km-preview',
+          labelContext: 'máx. que você atende',
+        });
+
+        const ulDisp = document.getElementById('prestador-pedidos-disponiveis-list');
+        const ulMeus = document.getElementById('prestador-meus-pedidos-list');
+        const panel = document.getElementById('prestador-panel-pedidos-api');
+        const btnRef = document.getElementById('prestador-btn-refresh-pedidos');
+        const fb = document.getElementById('prestador-pedidos-api-feedback');
+        const alertaShell = document.getElementById('prestador-alerta-novo-pedido');
+        const alertaConteudo = document.getElementById('prestador-alerta-novo-pedido-conteudo');
+        const alertaFechar = document.getElementById('prestador-alerta-novo-pedido-fechar');
+        const alertaPollCb = document.getElementById('prestador-alerta-auto-refresh');
+
+        let prestadorPollTimer = null;
+        let prestadorPrimeiroFetchPedidos = true;
+        let prestadorIdsDispVistos = new Set();
+        let prestadorIdsMeusVistos = new Set();
+
+        function pararPollPedidosPrestador() {
+          if (prestadorPollTimer) {
+            clearInterval(prestadorPollTimer);
+            prestadorPollTimer = null;
+          }
+        }
+
+        function arranjarPollPedidosPrestador() {
+          pararPollPedidosPrestador();
+          if (!alertaPollCb || !alertaPollCb.checked) return;
+          if (!panel || panel.hidden) return;
+          prestadorPollTimer = setInterval(() => {
+            refreshPrestadorPedidosApi();
+          }, 45000);
+        }
+
+        function formatarResumoPedidoAlerta(p) {
+          const wrap = document.createElement('div');
+          wrap.className = 'prestador-alerta-pedido-item';
+          const orig =
+            p._origem === 'meu'
+              ? 'Em negociação (novo na sua lista)'
+              : 'Fila de espera — aguardando aceite inicial';
+          const p0 = document.createElement('p');
+          p0.className = 'muted small';
+          p0.textContent = 'Origem: ' + orig;
+          wrap.appendChild(p0);
+          const p1 = document.createElement('p');
+          p1.className = 'muted small';
+          p1.textContent =
+            'Pedido: ' +
+              String(p.id || '').slice(0, 8) +
+              '… · ' +
+              (window.GUIA_ME_pedidoStatus?.textoEstadoLinha(p) || 'Estado: ' + (p.status || 'novo'));
+          wrap.appendChild(p1);
+          const loc = [p.bairro, p.cidade].filter(Boolean).join(' · ');
+          if (loc) {
+            const pl = document.createElement('p');
+            pl.className = 'muted small';
+            pl.textContent = 'Local: ' + loc;
+            wrap.appendChild(pl);
+          }
+          const serv = Array.isArray(p.servicos) ? p.servicos.filter(Boolean).join(', ') : '';
+          if (serv) {
+            const ps = document.createElement('p');
+            ps.className = 'muted small';
+            ps.textContent = 'Serviços: ' + serv;
+            wrap.appendChild(ps);
+          }
+          const desc = String(p.descricao || '').trim();
+          if (desc) {
+            const pd = document.createElement('p');
+            pd.className = 'muted small';
+            pd.textContent = 'Descrição: ' + (desc.length > 280 ? desc.slice(0, 280) + '…' : desc);
+            wrap.appendChild(pd);
+          }
+          if (p.horario_pref) {
+            const ph = document.createElement('p');
+            ph.className = 'muted small';
+            ph.textContent = 'Horário preferido: ' + p.horario_pref;
+            wrap.appendChild(ph);
+          }
+          if (p.metragem_m2 != null && p.metragem_m2 !== '') {
+            const pm = document.createElement('p');
+            pm.className = 'muted small';
+            pm.textContent = 'Metragem: ' + p.metragem_m2 + ' m²';
+            wrap.appendChild(pm);
+          }
+          if (p.valor_servico != null && Number.isFinite(Number(p.valor_servico))) {
+            const pv = document.createElement('p');
+            pv.className = 'muted small';
+            pv.textContent =
+              'Valor serviço (ref.): R$ ' + Number(p.valor_servico).toFixed(2).replace('.', ',');
+            wrap.appendChild(pv);
+          }
+          if (p.fotos_count) {
+            const pf = document.createElement('p');
+            pf.className = 'muted small';
+            pf.textContent = 'Fotos referidas no pedido: ' + p.fotos_count;
+            wrap.appendChild(pf);
+          }
+          if (p.createdAt) {
+            const pt = document.createElement('p');
+            pt.className = 'muted small';
+            pt.textContent = 'Criado em: ' + p.createdAt;
+            wrap.appendChild(pt);
+          }
+          return wrap;
+        }
+
+        function abrirCardAlertaNovoPedido(pedidos) {
+          if (!alertaShell || !alertaConteudo) return;
+          alertaConteudo.innerHTML = '';
+          pedidos.forEach((p, i) => {
+            const copy = { ...p };
+            alertaConteudo.appendChild(formatarResumoPedidoAlerta(copy));
+            if (i < pedidos.length - 1) {
+              const hr = document.createElement('hr');
+              hr.className = 'prestador-alerta-sep';
+              alertaConteudo.appendChild(hr);
+            }
+          });
+          alertaShell.hidden = false;
+          try {
+            document.getElementById('prestador-alerta-novo-pedido-fechar')?.focus();
+          } catch (e) {
+            /* ignore */
+          }
+        }
+
+        function tocarToqueTelefone() {
+          function beep(freq, ms, delayMs) {
+            setTimeout(() => {
+              try {
+                const AC = window.AudioContext || window.webkitAudioContext;
+                if (!AC) return;
+                const ctx = new AC();
+                if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.18, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + ms / 1000);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                setTimeout(() => {
+                  try {
+                    osc.stop();
+                    ctx.close();
+                  } catch (e2) {
+                    /* ignore */
+                  }
+                }, ms + 40);
+              } catch (e) {
+                /* ignore */
+              }
+            }, delayMs);
+          }
+          beep(880, 180, 0);
+          beep(660, 180, 220);
+          beep(880, 180, 950);
+          beep(660, 180, 1170);
+        }
+
+        function vibrarNovoPedido() {
+          try {
+            if (navigator.vibrate) {
+              navigator.vibrate([380, 130, 260, 130, 380, 280, 380, 130, 260, 130, 520]);
+            }
+          } catch (e) {
+            /* ignore */
+          }
+        }
+
+        async function pedidoChatReloadMsgs(wrap, token, pedidoId) {
+          const r = await fetch('/api/pedidos/' + pedidoId + '/messages', {
+            headers: { Authorization: 'Bearer ' + token },
+          });
+          const d = await r.json().catch(() => ({}));
+          const msgs = wrap.querySelector('[data-pedido-chat-msgs]');
+          if (!msgs) return;
+          msgs.innerHTML = '';
+          if (!r.ok || !d.ok) {
+            const li2 = document.createElement('li');
+            li2.className = 'muted small';
+            li2.textContent = d.error || 'Erro ao carregar chat';
+            msgs.appendChild(li2);
+            return;
+          }
+          const list = d.mensagens || [];
+          if (!list.length) {
+            const li2 = document.createElement('li');
+            li2.className = 'muted small';
+            li2.textContent = '(Sem mensagens ainda.)';
+            msgs.appendChild(li2);
+            return;
+          }
+          for (const m of list) {
+            const li2 = document.createElement('li');
+            li2.className = 'muted small';
+            li2.textContent = '[' + m.authorLabel + ' · ' + m.authorTipo + '] ' + m.body;
+            msgs.appendChild(li2);
+          }
+        }
+
+        function pedidoChatAppendRow(li, pedidoId) {
+          const wrap = document.createElement('div');
+          wrap.className = 'pedido-chat-wrap';
+          wrap.style.marginTop = '10px';
+          const note = document.createElement('p');
+          note.className = 'muted small';
+          note.textContent = 'Chat do pedido:';
+          const policy = document.createElement('p');
+          policy.className = 'pedido-chat-policy muted small';
+          policy.textContent =
+            window.GUIA_ME_chatPolicy?.CHAT_POLICY_HINT ||
+            'Conversa apenas pelo app: não envie telefone, WhatsApp, e-mail, links nem redes sociais.';
+          const btnLoad = document.createElement('button');
+          btnLoad.type = 'button';
+          btnLoad.className = 'btn btn-small btn-secondary';
+          btnLoad.textContent = 'Carregar mensagens';
+          btnLoad.dataset.pedidoChatLoad = pedidoId;
+          const msgs = document.createElement('ul');
+          msgs.className = 'muted small';
+          msgs.style.marginTop = '6px';
+          msgs.style.listStyle = 'disc';
+          msgs.style.paddingLeft = '1.1rem';
+          msgs.dataset.pedidoChatMsgs = pedidoId;
+          msgs.hidden = true;
+          const row = document.createElement('div');
+          row.style.marginTop = '8px';
+          row.style.display = 'flex';
+          row.style.gap = '8px';
+          row.style.flexWrap = 'wrap';
+          row.style.alignItems = 'center';
+          row.hidden = true;
+          row.dataset.pedidoChatCompose = '1';
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          inp.className = 'pedido-chat-input';
+          inp.maxLength = 2000;
+          inp.placeholder = 'Mensagem só pelo app (sem telefone, e-mail ou links)…';
+          inp.style.minWidth = '0';
+          inp.style.flex = '1';
+          const send = document.createElement('button');
+          send.type = 'button';
+          send.className = 'btn btn-small btn-primary';
+          send.textContent = 'Enviar';
+          send.dataset.pedidoChatSend = pedidoId;
+          row.appendChild(inp);
+          row.appendChild(send);
+          wrap.appendChild(note);
+          wrap.appendChild(policy);
+          wrap.appendChild(btnLoad);
+          wrap.appendChild(msgs);
+          wrap.appendChild(row);
+          li.appendChild(wrap);
+        }
+
+        function fmtBRLPedidoRelatorio(n) {
+          if (n == null || n === '' || !Number.isFinite(Number(n))) return null;
+          return 'R$ ' + Number(n).toFixed(2).replace('.', ',');
+        }
+
+        function appendRelatorioOrcamentoFechado(li, p, role) {
+          if (!p.prestadorId) return;
+          if (p.status !== 'aceito' && p.status !== 'concluido') return;
+          const box = document.createElement('div');
+          box.className = 'pedido-orcamento-box pedido-relatorio-orcamento';
+          const tit = document.createElement('p');
+          tit.className = 'muted small';
+          const sb = document.createElement('strong');
+          sb.textContent = 'Relatório do orçamento entre as partes';
+          tit.appendChild(sb);
+          tit.appendChild(
+            document.createTextNode(
+              ' — valores e condições registados no pedido; o fechamento mútuo confirma o acordo após o aceite.',
+            ),
+          );
+          box.appendChild(tit);
+
+          const partes = document.createElement('p');
+          partes.className = 'muted small pedido-relatorio-linha';
+          partes.appendChild(document.createTextNode('Partes: cliente '));
+          const ccode = document.createElement('code');
+          ccode.textContent = String(p.clienteId || '').slice(0, 8) + '…';
+          partes.appendChild(ccode);
+          partes.appendChild(document.createTextNode(' · prestador '));
+          const pcode = document.createElement('code');
+          pcode.textContent = String(p.prestadorId || '').slice(0, 8) + '…';
+          partes.appendChild(pcode);
+          partes.appendChild(
+            document.createTextNode(
+              role === 'cliente' ? ' (vista cliente).' : ' (vista prestador).',
+            ),
+          );
+          box.appendChild(partes);
+
+          const h1 = document.createElement('p');
+          h1.className = 'pedido-relatorio-subtit';
+          h1.textContent = 'Pedido e local';
+          box.appendChild(h1);
+          const serv = Array.isArray(p.servicos) ? p.servicos.filter(Boolean).join(', ') : '';
+          if (serv) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            const ls = document.createElement('strong');
+            ls.textContent = 'Serviços: ';
+            t.appendChild(ls);
+            t.appendChild(document.createTextNode(serv));
+            box.appendChild(t);
+          }
+          const loc = [p.bairro, p.cidade].filter(Boolean).join(' · ');
+          if (loc) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            const ll = document.createElement('strong');
+            ll.textContent = 'Local: ';
+            t.appendChild(ll);
+            t.appendChild(document.createTextNode(loc));
+            box.appendChild(t);
+          }
+          if (p.horario_pref) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            t.textContent = 'Horário preferido: ' + p.horario_pref;
+            box.appendChild(t);
+          }
+          if (p.metragem_m2 != null && p.metragem_m2 !== '') {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            t.textContent = 'Metragem: ' + p.metragem_m2 + ' m²';
+            box.appendChild(t);
+          }
+          if (p.fotos_count) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            t.textContent = 'Fotos anexadas (referência): ' + p.fotos_count;
+            box.appendChild(t);
+          }
+          const desc = String(p.descricao || '').trim();
+          if (desc) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            t.textContent =
+              'Descrição: ' + (desc.length > 400 ? desc.slice(0, 400) + '…' : desc);
+            box.appendChild(t);
+          }
+
+          const h2 = document.createElement('p');
+          h2.className = 'pedido-relatorio-subtit';
+          h2.textContent = 'Referência de valores no pedido';
+          box.appendChild(h2);
+          const vs = fmtBRLPedidoRelatorio(p.valor_servico);
+          const tvs = document.createElement('p');
+          tvs.className = 'muted small pedido-relatorio-linha';
+          const vsLab = document.createElement('strong');
+          vsLab.textContent = 'Valor do serviço (ref.): ';
+          tvs.appendChild(vsLab);
+          tvs.appendChild(document.createTextNode(vs || 'não indicado no pedido'));
+          if (p.comissao_app_percent != null && Number.isFinite(Number(p.comissao_app_percent))) {
+            tvs.appendChild(
+              document.createTextNode(
+                ' · comissão app: ' + Number(p.comissao_app_percent) + '%',
+              ),
+            );
+          }
+          box.appendChild(tvs);
+          const cApp = fmtBRLPedidoRelatorio(p.comissao_app_reais);
+          const liq = fmtBRLPedidoRelatorio(p.valor_liquido_prestador_servico);
+          if (cApp || liq) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            t.textContent =
+              (cApp ? 'Comissão app (ref.): ' + cApp + '. ' : '') +
+              (liq ? 'Líquido prestador serviço (ref.): ' + liq + '.' : '');
+            box.appendChild(t);
+          }
+          const km = p.km_deslocamento;
+          const taxa = fmtBRLPedidoRelatorio(p.taxa_deslocamento_reais);
+          if (
+            (km != null && Number(km) > 0) ||
+            taxa ||
+            p.taxa_deslocamento_por_km != null
+          ) {
+            const t = document.createElement('p');
+            t.className = 'muted small pedido-relatorio-linha';
+            const parts = [];
+            if (km != null && String(km) !== '') parts.push('Km deslocamento (ref.): ' + km);
+            if (p.taxa_deslocamento_por_km != null)
+              parts.push('Taxa/km: R$ ' + String(p.taxa_deslocamento_por_km).replace('.', ','));
+            if (taxa) parts.push('Taxa deslocamento (ref.): ' + taxa);
+            t.textContent = parts.join(' · ');
+            box.appendChild(t);
+          }
+
+          const h3 = document.createElement('p');
+          h3.className = 'pedido-relatorio-subtit';
+          h3.textContent = 'Aceite e confirmações de fechamento';
+          box.appendChild(h3);
+          const tCri = document.createElement('p');
+          tCri.className = 'muted small pedido-relatorio-linha';
+          tCri.textContent = 'Pedido criado: ' + (p.createdAt || '—');
+          box.appendChild(tCri);
+          const tAce = document.createElement('p');
+          tAce.className = 'muted small pedido-relatorio-linha';
+          tAce.textContent = 'Aceite pelo prestador: ' + (p.aceitoAt || '—');
+          box.appendChild(tAce);
+          const tCl = document.createElement('p');
+          tCl.className = 'muted small pedido-relatorio-linha';
+          tCl.textContent = p.fechamentoClienteAt
+            ? 'Confirmação fechamento (cliente): ' + p.fechamentoClienteAt
+            : 'Confirmação fechamento (cliente): pendente';
+          box.appendChild(tCl);
+          const tPr = document.createElement('p');
+          tPr.className = 'muted small pedido-relatorio-linha';
+          tPr.textContent = p.fechamentoPrestadorAt
+            ? 'Confirmação fechamento (prestador): ' + p.fechamentoPrestadorAt
+            : 'Confirmação fechamento (prestador): pendente';
+          box.appendChild(tPr);
+          if (String(p.status) === 'concluido' && p.concluidoAt) {
+            const tF = document.createElement('p');
+            tF.className = 'muted small pedido-relatorio-linha';
+            const sf = document.createElement('strong');
+            sf.textContent = 'Orçamento concluído entre as partes: ';
+            tF.appendChild(sf);
+            tF.appendChild(document.createTextNode(p.concluidoAt));
+            box.appendChild(tF);
+          }
+          li.appendChild(box);
+        }
+
+        function appendPedidoOrcamentoSection(li, p, role) {
+          if (!p.prestadorId) return;
+          if (p.status !== 'aceito' && p.status !== 'concluido') return;
+          const box = document.createElement('div');
+          box.className = 'pedido-orcamento-box';
+          const tit = document.createElement('p');
+          tit.className = 'muted small';
+          const sb = document.createElement('strong');
+          sb.textContent = 'Fechamento do orçamento';
+          tit.appendChild(sb);
+          tit.appendChild(document.createTextNode(' — confirmação mútua do acordo (cliente e prestador).'));
+          box.appendChild(tit);
+          const st = document.createElement('p');
+          st.className = 'muted small';
+          if (String(p.status) === 'concluido' && p.concluido_via === 'documento_fiscal') {
+            st.textContent =
+              'Serviço concluído: NF/recibo enviado · garantia até ' +
+              (p.garantia_ate ? String(p.garantia_ate).slice(0, 10) : '—');
+          } else if (String(p.status) === 'concluido') {
+            st.textContent = 'Pedido concluído.';
+          } else if (p.fechamentoClienteAt && p.fechamentoPrestadorAt) {
+            st.textContent = 'Ambas as partes confirmaram.';
+          } else if (p.fechamentoClienteAt) {
+            st.textContent =
+              role === 'cliente'
+                ? 'Já confirmou o orçamento. Aguarda confirmação do prestador.'
+                : 'Cliente confirmou. Aguarda a sua confirmação.';
+          } else if (p.fechamentoPrestadorAt) {
+            st.textContent =
+              role === 'cliente'
+                ? 'Prestador confirmou. Aguarda a sua confirmação.'
+                : 'Já confirmou o orçamento. Aguarda confirmação do cliente.';
+          } else {
+            st.textContent = 'Ainda sem confirmação de fechamento do orçamento.';
+          }
+          box.appendChild(st);
+          if (p.fechamentoClienteAt) {
+            const t = document.createElement('p');
+            t.className = 'muted small';
+            t.textContent = 'Registo cliente: ' + p.fechamentoClienteAt;
+            box.appendChild(t);
+          }
+          if (p.fechamentoPrestadorAt) {
+            const t = document.createElement('p');
+            t.className = 'muted small';
+            t.textContent = 'Registo prestador: ' + p.fechamentoPrestadorAt;
+            box.appendChild(t);
+          }
+          const actions = document.createElement('div');
+          actions.className = 'pedido-orcamento-acoes';
+          if (String(p.status) === 'aceito') {
+            if (role === 'cliente' && !p.fechamentoClienteAt) {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'btn btn-small btn-primary';
+              b.textContent = 'Confirmar fechamento do orçamento (cliente)';
+              b.dataset.pedidoFecharCliente = p.id;
+              b.setAttribute('aria-label', 'Confirmar fechamento do orçamento como cliente');
+              actions.appendChild(b);
+            }
+            if (role === 'prestador' && !p.fechamentoPrestadorAt) {
+              const b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'btn btn-small btn-primary';
+              b.textContent = 'Confirmar fechamento do orçamento (prestador)';
+              b.dataset.pedidoFecharPrestador = p.id;
+              b.setAttribute('aria-label', 'Confirmar fechamento do orçamento como prestador');
+              actions.appendChild(b);
+            }
+          }
+          if (actions.childNodes.length) box.appendChild(actions);
+          li.appendChild(box);
+        }
+
+        function appendPedidoFormPropostaPrestador(li, p) {
+          if (!p.prestadorId) return;
+          if (String(p.status) === 'concluido') {
+            if (!p.orcamentoEnviadoAt || p.orcamentoValor == null) return;
+            const box = document.createElement('div');
+            box.className = 'pedido-orcamento-box';
+            const tit = document.createElement('p');
+            tit.className = 'muted small';
+            const sb = document.createElement('strong');
+            sb.textContent = 'Proposta enviada';
+            tit.appendChild(sb);
+            tit.appendChild(
+              document.createTextNode(
+                ' (pedido concluído — só leitura): ' + (fmtBRLPedidoRelatorio(p.orcamentoValor) || '—'),
+              ),
+            );
+            box.appendChild(tit);
+            if (p.orcamentoObservacao) {
+              const o = document.createElement('p');
+              o.className = 'muted small';
+              o.textContent = 'Observação: ' + p.orcamentoObservacao;
+              box.appendChild(o);
+            }
+            const t = document.createElement('p');
+            t.className = 'muted small';
+            t.textContent = 'Registada em: ' + p.orcamentoEnviadoAt;
+            box.appendChild(t);
+            li.appendChild(box);
+            return;
+          }
+          if (p.status !== 'aceito') return;
+          const box = document.createElement('div');
+          box.className = 'pedido-orcamento-box';
+          const tit = document.createElement('p');
+          tit.className = 'muted small';
+          const sb = document.createElement('strong');
+          sb.textContent = 'Enviar proposta de orçamento';
+          tit.appendChild(sb);
+          tit.appendChild(
+            document.createTextNode(
+              ' — valor mín. R$ 100 (regra do app); pode atualizar enquanto o pedido estiver aceite.',
+            ),
+          );
+          box.appendChild(tit);
+          const row1 = document.createElement('div');
+          row1.className = 'pedido-orcamento-form-row';
+          const labV = document.createElement('label');
+          labV.className = 'muted small';
+          labV.textContent = 'Valor do serviço (R$)';
+          const inpV = document.createElement('input');
+          inpV.type = 'number';
+          inpV.step = '0.01';
+          inpV.min = '0';
+          inpV.className = 'pedido-orcamento-valor-input';
+          inpV.value = p.orcamentoValor != null ? String(p.orcamentoValor) : '';
+          row1.appendChild(labV);
+          row1.appendChild(inpV);
+          box.appendChild(row1);
+          const row2 = document.createElement('div');
+          row2.className = 'pedido-orcamento-form-row';
+          const labO = document.createElement('label');
+          labO.className = 'muted small';
+          labO.textContent = 'Observação (opcional)';
+          const inpO = document.createElement('textarea');
+          inpO.rows = 2;
+          inpO.className = 'pedido-orcamento-obs-input';
+          inpO.placeholder = 'Detalhes da proposta';
+          inpO.value = p.orcamentoObservacao ? String(p.orcamentoObservacao) : '';
+          row2.appendChild(labO);
+          row2.appendChild(inpO);
+          box.appendChild(row2);
+          const row3 = document.createElement('div');
+          row3.className = 'pedido-orcamento-acoes';
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'btn btn-small btn-secondary';
+          btn.textContent = p.orcamentoEnviadoAt ? 'Atualizar proposta' : 'Enviar proposta';
+          btn.dataset.orcamentoPedidoId = p.id;
+          const fb = document.createElement('span');
+          fb.className = 'muted small pedido-orcamento-form-feedback';
+          row3.appendChild(btn);
+          row3.appendChild(fb);
+          box.appendChild(row3);
+          li.appendChild(box);
+        }
+
+        function appendPlaceholder(ul, text) {
+          const li = document.createElement('li');
+          li.className = 'muted small';
+          li.textContent = text;
+          ul.appendChild(li);
+        }
+
+        function appendPedidoCard(ul, p, kind) {
+          const li = document.createElement('li');
+          li.className = 'mini-card mini-card--stack';
+          const main = document.createElement('div');
+          main.className = 'mini-card__main';
+          const line1 = document.createElement('div');
+          const strong = document.createElement('strong');
+          strong.textContent = 'Pedido ' + String(p.id || '').slice(0, 8) + '…';
+          line1.appendChild(strong);
+          const st = document.createElement('span');
+          st.textContent =
+            ' · ' +
+            (window.GUIA_ME_pedidoStatus?.textoEstadoLinha(p) || 'Estado: ' + (p.status || 'novo'));
+          line1.appendChild(st);
+          if (window.GUIA_ME_pedidoStatus?.emFilaEspera(p)) {
+            const tagFila = document.createElement('span');
+            tagFila.className = 'tag tag--fila-espera';
+            tagFila.textContent = 'Fila de espera';
+            tagFila.style.marginLeft = '0.5rem';
+            line1.appendChild(tagFila);
+          }
+          main.appendChild(line1);
+          const descFila = window.GUIA_ME_pedidoStatus?.descricaoStatus(p);
+          if (descFila) {
+            const fh = document.createElement('p');
+            fh.className = 'muted small pedido-fila-hint';
+            fh.textContent = descFila;
+            main.appendChild(fh);
+          }
+          const sub = document.createElement('p');
+          sub.className = 'muted small';
+          const desc = String(p.descricao || '');
+          sub.textContent = desc.slice(0, 160) + (desc.length > 160 ? '…' : '');
+          main.appendChild(sub);
+          if (p.cidade || p.bairro) {
+            const loc = document.createElement('p');
+            loc.className = 'muted small';
+            loc.textContent = [p.bairro, p.cidade].filter(Boolean).join(' · ');
+            main.appendChild(loc);
+          }
+          if (p.km_deslocamento != null && String(p.km_deslocamento) !== '') {
+            const kmL = document.createElement('p');
+            kmL.className = 'muted small';
+            kmL.textContent = 'Km deslocamento (cliente, só ida): ' + p.km_deslocamento;
+            main.appendChild(kmL);
+          }
+          li.appendChild(main);
+          if (kind === 'disp') {
+            const prevCob = document.createElement('p');
+            prevCob.className = 'muted small pedido-cobranca-aceite-prev';
+            prevCob.textContent = 'Cobrança do cliente no aceite: a calcular…';
+            li.appendChild(prevCob);
+            if (window.GUIA_ME_cobrancaAceite) {
+              window.GUIA_ME_cobrancaAceite.renderInto(prevCob, p.km_deslocamento);
+            }
+            const hint = document.createElement('p');
+            hint.className = 'muted small';
+            hint.textContent =
+              'Ao aceitar, o débito acima é feito no saldo ou cartão do cliente (uma única cobrança com discriminação).';
+            li.appendChild(hint);
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'btn btn-small btn-primary';
+            b.textContent = 'Aceitar e iniciar negociação';
+            b.dataset.pedidoAceitar = p.id;
+            li.appendChild(b);
+          }
+          if (kind === 'meu') {
+            if (typeof guiameAppendTaxaAceiteBox === 'function') guiameAppendTaxaAceiteBox(li, p, 'prestador');
+            if (typeof guiameAppendTaxaPrestadorFechamentoBox === 'function')
+              guiameAppendTaxaPrestadorFechamentoBox(li, p, 'prestador');
+            if (window.GUIA_ME_nfRecibo && (p.status === 'aceito' || p.status === 'concluido')) {
+              window.GUIA_ME_nfRecibo.appendPedidoDocFiscalRow(li, p, 'prestador');
+              window.GUIA_ME_nfRecibo.appendGarantiaServicoBox(li, p);
+            }
+            appendPedidoFormPropostaPrestador(li, p);
+            appendRelatorioOrcamentoFechado(li, p, 'prestador');
+            appendPedidoOrcamentoSection(li, p, 'prestador');
+          }
+          pedidoChatAppendRow(li, p.id);
+          ul.appendChild(li);
+        }
+
+        async function refreshPrestadorPedidosApi() {
+          const token = sessionStorage.getItem('guiame_auth_token');
+          if (!token || !panel || !ulDisp || !ulMeus) {
+            pararPollPedidosPrestador();
+            await window.GUIA_ME_pedidoFilaDemo?.syncPrestador?.();
+            return;
+          }
+          const me = await fetch('/api/auth/me', {
+            headers: { Authorization: 'Bearer ' + token },
+          }).then((r) => r.json());
+          if (!me.ok || me.tipo !== 'prestador') {
+            pararPollPedidosPrestador();
+            await window.GUIA_ME_pedidoFilaDemo?.syncPrestador?.();
+            return;
+          }
+          await window.GUIA_ME_pedidoFilaDemo?.syncPrestador?.();
+          const r = await fetch('/api/pedidos', { headers: { Authorization: 'Bearer ' + token } });
+          const d = await r.json().catch(() => ({}));
+          ulDisp.innerHTML = '';
+          ulMeus.innerHTML = '';
+          if (!r.ok) {
+            if (fb) fb.textContent = d.error || 'Erro ao carregar pedidos.';
+            return;
+          }
+          if (fb) fb.textContent = '';
+          const disp = Array.isArray(d.pedidos) ? d.pedidos : [];
+          const meus = Array.isArray(d.meus_pedidos) ? d.meus_pedidos : [];
+          const idsDisp = new Set(disp.map((p) => p.id).filter(Boolean));
+          const idsMeus = new Set(meus.map((p) => p.id).filter(Boolean));
+          if (prestadorPrimeiroFetchPedidos) {
+            prestadorIdsDispVistos = idsDisp;
+            prestadorIdsMeusVistos = idsMeus;
+            prestadorPrimeiroFetchPedidos = false;
+          } else {
+            const novosDisp = disp.filter((p) => p.id && !prestadorIdsDispVistos.has(p.id));
+            const novosMeus = meus.filter((p) => p.id && !prestadorIdsMeusVistos.has(p.id));
+            const novos = [
+              ...novosDisp.map((p) => Object.assign({}, p, { _origem: 'fila' })),
+              ...novosMeus.map((p) => Object.assign({}, p, { _origem: 'meu' })),
+            ];
+            if (novos.length) {
+              abrirCardAlertaNovoPedido(novos);
+              tocarToqueTelefone();
+              vibrarNovoPedido();
+            }
+            prestadorIdsDispVistos = idsDisp;
+            prestadorIdsMeusVistos = idsMeus;
+          }
+          if (!disp.length)
+            appendPlaceholder(ulDisp, 'Nenhuma solicitação na fila de espera da sua área neste momento.');
+          else for (const p of disp) appendPedidoCard(ulDisp, p, 'disp');
+          if (!meus.length) appendPlaceholder(ulMeus, 'Ainda sem pedidos em negociação.');
+          else for (const p of meus) appendPedidoCard(ulMeus, p, 'meu');
+          arranjarPollPedidosPrestador();
+        }
+
+        ulDisp?.addEventListener('click', async (ev) => {
+          const id = ev.target?.dataset?.pedidoAceitar;
+          if (!id || ev.target.tagName !== 'BUTTON') return;
+          const token = sessionStorage.getItem('guiame_auth_token');
+          if (!token) return;
+          const r = await fetch('/api/pedidos/' + id + '/aceitar', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + token },
+          });
+          const d = await r.json().catch(() => ({}));
+          if (fb) {
+            if (r.ok) {
+              let msg =
+                'Aceite inicial registado — pedido em negociação. ' +
+                (window.GUIA_ME_pedidoStatus?.textoEstadoLinha(d.pedido) ||
+                  'Estado: ' + (d.pedido?.status || '?'));
+              const ped = d.pedido || {};
+              const ta = d.taxa_aceite || {};
+              if (typeof guiameTextoResumoCobrancaAceite === 'function' && ped.taxa_aceite_cobrada_at) {
+                msg += ' · ' + guiameTextoResumoCobrancaAceite(ped);
+              } else if (ta.total_reais != null || ta.reais != null) {
+                const tot = ta.total_reais ?? ta.reais;
+                msg += ' · Total debitado do cliente: R$ ' + Number(tot).toFixed(2).replace('.', ',');
+              }
+              fb.textContent = msg;
+            } else {
+              fb.textContent = d.error || 'Erro ao aceitar';
+            }
+          }
+          refreshPrestadorPedidosApi();
+        });
+
+        ulMeus?.addEventListener('click', async (ev) => {
+          const pidOrc = ev.target?.dataset?.orcamentoPedidoId;
+          if (pidOrc && ev.target.tagName === 'BUTTON') {
+            const token = sessionStorage.getItem('guiame_auth_token');
+            if (!token) return;
+            const li = ev.target.closest('li');
+            const inpV = li?.querySelector('.pedido-orcamento-valor-input');
+            const inpO = li?.querySelector('.pedido-orcamento-obs-input');
+            const fb = li?.querySelector('.pedido-orcamento-form-feedback');
+            const valorNum = inpV ? Number(String(inpV.value).replace(',', '.')) : NaN;
+            if (!Number.isFinite(valorNum) || valorNum <= 0) {
+              if (fb) {
+                fb.textContent = 'Indique um valor válido.';
+                fb.className = 'muted small error';
+              }
+              return;
+            }
+            const r = await fetch('/api/pedidos/' + encodeURIComponent(pidOrc) + '/orcamento', {
+              method: 'POST',
+              headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                valor: valorNum,
+                observacao: inpO ? String(inpO.value || '').trim() : '',
+              }),
+            });
+            const d = await r.json().catch(() => ({}));
+            if (fb) {
+              fb.textContent = r.ok ? 'Proposta registada.' : d.error || 'Erro ao enviar';
+              fb.className = r.ok ? 'muted small ok' : 'muted small error';
+            }
+            if (r.ok) refreshPrestadorPedidosApi();
+            return;
+          }
+
+          const id = ev.target?.dataset?.pedidoFecharPrestador;
+          if (!id || ev.target.tagName !== 'BUTTON') return;
+          const token = sessionStorage.getItem('guiame_auth_token');
+          if (!token) return;
+          const r = await fetch('/api/pedidos/' + id + '/fechamento-prestador', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + token },
+          });
+          const d = await r.json().catch(() => ({}));
+          if (fb) {
+            if (fb) {
+              fb.textContent = r.ok
+                ? 'Acordo de orçamento registado (prestador). Para concluir o serviço, envie NF/recibo em Conta → NF e recibos.'
+                : d.error || 'Erro ao registar fechamento do orçamento';
+            }
+          }
+          refreshPrestadorPedidosApi();
+          refreshPrestadorPagamentosInfo();
+        });
+
+        async function refreshPrestadorPagamentosInfo() {
+          const cotEl = document.getElementById('prestador-pagamentos-cotacao');
+          const salEl = document.getElementById('prestador-pagamentos-saldo');
+          try {
+            const rc = await fetch('/api/taxa-prestador-fechamento/cotacao');
+            const dc = await rc.json().catch(() => ({}));
+            if (cotEl && rc.ok && dc.reais != null) {
+              const br = guiameFmtBRLTaxaAceite
+                ? guiameFmtBRLTaxaAceite(dc.reais)
+                : 'R$ ' + Number(dc.reais).toFixed(2);
+              cotEl.textContent =
+                'Taxa de fechamento (US$ ' +
+                Number(dc.usd || 10).toFixed(2) +
+                '): ' +
+                br +
+                ' (câmbio ' +
+                Number(dc.cambio_usd_brl).toFixed(4) +
+                ', arredondado para cima).';
+            } else if (cotEl) cotEl.textContent = 'Cotação indisponível.';
+          } catch {
+            if (cotEl) cotEl.textContent = 'Cotação indisponível.';
+          }
+          const token = sessionStorage.getItem('guiame_auth_token');
+          if (!salEl || !token) return;
+          try {
+            const rm = await fetch('/api/auth/me', { headers: { Authorization: 'Bearer ' + token } });
+            const dm = await rm.json().catch(() => ({}));
+            if (!rm.ok || !dm.perfil) {
+              salEl.textContent = '';
+              return;
+            }
+            const saldo = Number(dm.perfil.saldo_reais);
+            const cartao = dm.perfil.cartao_cadastrado === true || dm.perfil.cartao_cadastrado === '1';
+            const u4 = dm.perfil.cartao_ultimos4 ? String(dm.perfil.cartao_ultimos4) : '';
+            const parts = [];
+            if (Number.isFinite(saldo)) {
+              parts.push('Saldo em conta: R$ ' + saldo.toFixed(2).replace('.', ','));
+            }
+            if (cartao) parts.push('Cartão' + (u4 ? ' •••• ' + u4 : ' cadastrado'));
+            salEl.textContent = parts.length
+              ? parts.join(' · ')
+              : 'Cadastre saldo ou cartão para concluir pedidos.';
+          } catch {
+            salEl.textContent = '';
+          }
+        }
+
+        const prestadorNfConta = window.GUIA_ME_nfRecibo?.initConta({
+          listaId: 'prestador-nf-lista',
+          pedidoSelectId: 'prestador-nf-pedido-select',
+          fileInputId: 'prestador-nf-file',
+          feedbackId: 'prestador-nf-feedback',
+          enviarBtnId: 'prestador-nf-enviar-btn',
+          role: 'prestador',
+        });
+
+        btnRef?.addEventListener('click', () => {
+          refreshPrestadorPedidosApi();
+          prestadorNfConta?.refreshLista?.();
+          prestadorNfConta?.loadPedidosSelect?.();
+        });
+
+        try {
+          const pollSaved = localStorage.getItem('guiame_prestador_poll_45s');
+          if (pollSaved !== null && alertaPollCb) {
+            alertaPollCb.checked = pollSaved === '1' || pollSaved === 'true';
+          }
+        } catch (e) {
+          /* ignore */
+        }
+        alertaPollCb?.addEventListener('change', () => {
+          try {
+            localStorage.setItem('guiame_prestador_poll_45s', alertaPollCb.checked ? '1' : '0');
+          } catch (e2) {
+            /* ignore */
+          }
+          arranjarPollPedidosPrestador();
+        });
+        alertaFechar?.addEventListener('click', () => {
+          if (alertaShell) alertaShell.hidden = true;
+        });
+
+        window.GUIA_ME_pedidoFilaDemo?.syncPrestador?.();
+        refreshPrestadorPedidosApi();
+        refreshPrestadorPagamentosInfo();
+
+        panel?.addEventListener('click', async (ev) => {
+          const loadId = ev.target?.dataset?.pedidoChatLoad;
+          if (loadId && ev.target.tagName === 'BUTTON') {
+            const token = sessionStorage.getItem('guiame_auth_token');
+            if (!token) return;
+            const wrap = ev.target.closest('.pedido-chat-wrap');
+            if (!wrap) return;
+            await pedidoChatReloadMsgs(wrap, token, loadId);
+            const msgs = wrap.querySelector('[data-pedido-chat-msgs]');
+            const row = wrap.querySelector('[data-pedido-chat-compose]');
+            if (msgs) msgs.hidden = false;
+            if (row) row.hidden = false;
+            return;
+          }
+          const sendId = ev.target?.dataset?.pedidoChatSend;
+          if (sendId && ev.target.tagName === 'BUTTON') {
+            const token = sessionStorage.getItem('guiame_auth_token');
+            if (!token) return;
+            const wrap = ev.target.closest('.pedido-chat-wrap');
+            const inp = wrap?.querySelector('.pedido-chat-input');
+            const body = inp?.value?.trim() ?? '';
+            if (!body) return;
+            const chatCheck = window.GUIA_ME_chatPolicy?.validateChatMessage(body);
+            if (chatCheck && !chatCheck.ok) {
+              if (fb) fb.textContent = chatCheck.error;
+              return;
+            }
+            const r = await fetch('/api/pedidos/' + sendId + '/messages', {
+              method: 'POST',
+              headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ body }),
+            });
+            const d = await r.json().catch(() => ({}));
+            if (fb) fb.textContent = r.ok ? 'Mensagem enviada.' : d.error || 'Erro no chat';
+            if (inp && r.ok) inp.value = '';
+            if (wrap && r.ok) await pedidoChatReloadMsgs(wrap, token, sendId);
+            const msgs = wrap?.querySelector('[data-pedido-chat-msgs]');
+            const row = wrap?.querySelector('[data-pedido-chat-compose]');
+            if (msgs) msgs.hidden = false;
+            if (row) row.hidden = false;
+          }
+        });
+      });
+    </script>
+</body>
+</html>

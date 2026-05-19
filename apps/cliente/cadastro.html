@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cadastro de cliente — modelo tipo iFood (telefone, SMS, dados).">
+    <title>Criar conta · Cliente | Guia-me Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/shared/cadastro.css">
+</head>
+<body class="cadastro-body">
+    <div class="cad-shell" data-cad-total="6" data-cad-exit="/cliente/" data-cad-api="cliente" data-cad-submit-step="5">
+        <header class="cad-top">
+            <button type="button" class="cad-back" id="cad-back" aria-label="Voltar">‹</button>
+            <span class="cad-top-title" id="cad-top-title">Criar conta</span>
+            <a href="login.html" class="cad-login-link">Entrar</a>
+        </header>
+        <div class="cad-progress-wrap">
+            <div class="cad-progress"><div class="cad-progress-fill" id="cad-progress-fill"></div></div>
+        </div>
+
+        <main class="cad-main">
+            <section class="cad-step" data-cad-step="1" data-cad-title="Celular" hidden>
+                <h1 class="cad-headline">Qual é o seu celular?</h1>
+                <p class="cad-lead">Vamos enviar um código por SMS para confirmar que é você.</p>
+                <div class="cad-field">
+                    <span>Número com DDD</span>
+                    <div class="cad-phone-row">
+                        <div class="cad-ddi" aria-hidden="true">+55</div>
+                        <input class="cad-input" type="tel" name="celular" inputmode="numeric" autocomplete="tel-national"
+                            placeholder="11 98765-4321" required pattern="[\d\s\-()]{10,16}">
+                    </div>
+                </div>
+                <p class="cad-legal">Ao continuar, você concorda com os <a href="#">Termos de uso</a> e o <a href="#">Aviso de privacidade</a> (simulação).</p>
+            </section>
+
+            <section class="cad-step" data-cad-step="2" data-cad-title="Confirmação" hidden>
+                <h1 class="cad-headline">Digite o código</h1>
+                <p class="cad-lead" id="cad-sms-hint">Enviamos um SMS para o número informado.</p>
+                <div class="cad-field cad-otp-sync">
+                    <span>Código de 6 dígitos</span>
+                    <input type="hidden" name="otp" id="cad-otp-value" required pattern="\d{6}">
+                    <div class="cad-otp-row" role="group" aria-label="Código SMS">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 1">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 2">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 3">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 4">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 5">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 6">
+                    </div>
+                </div>
+                <p class="cad-resend">Não recebeu? <button type="button" id="cad-resend">Reenviar código</button><br>
+                    <button type="button" id="cad-otp-demo" style="margin-top:8px;background:none;border:none;color:var(--color-accent);font-weight:600;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0">Usar 123456 (demo)</button></p>
+            </section>
+
+            <section class="cad-step" data-cad-step="3" data-cad-title="Seus dados" hidden>
+                <h1 class="cad-headline">Quem é você?</h1>
+                <p class="cad-lead">Usamos isso para segurança e comunicação do pedido. Informe também o <strong>documento com foto</strong> (tipo e número / ID).</p>
+                <div class="cad-field">
+                    <span>Nome completo</span>
+                    <input class="cad-input" type="text" name="nome" autocomplete="name" placeholder="Como no documento" required minlength="3">
+                </div>
+                <div class="cad-field">
+                    <span>E-mail</span>
+                    <input class="cad-input" type="email" name="email" autocomplete="email" placeholder="voce@email.com" required>
+                </div>
+                <div class="cad-field">
+                    <span>Senha</span>
+                    <div class="cad-password-wrap">
+                        <input class="cad-input" id="cad-cliente-password" type="password" name="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <button type="button" class="cad-password-toggle" data-password-target="cad-cliente-password" aria-label="Mostrar senha" title="Mostrar senha">
+                            <span aria-hidden="true">👁</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="cad-field">
+                    <span>CPF</span>
+                    <input class="cad-input" type="text" name="cpf" inputmode="numeric" placeholder="000.000.000-00" required pattern="[\d.\-]{11,14}">
+                </div>
+                <div class="cad-field">
+                    <span>Documento de identidade — tipo</span>
+                    <select class="cad-select" name="documento_tipo" required>
+                        <option value="">Selecione</option>
+                        <option value="RG">RG</option>
+                        <option value="CNH">CNH (Carteira de motorista)</option>
+                        <option value="PASSAPORTE">Passaporte</option>
+                        <option value="RNE">RNE / RNM</option>
+                        <option value="OUTRO">Outro documento oficial com foto</option>
+                    </select>
+                </div>
+                <div class="cad-field">
+                    <span>Número do documento (ID)</span>
+                    <input class="cad-input" type="text" name="documento_id" autocomplete="off" placeholder="Ex.: MG-12.345.678 ou número da CNH" required minlength="4" maxlength="48">
+                </div>
+            </section>
+
+            <section class="cad-step cad-step-face" data-cad-step="4" data-cad-title="Rosto" hidden>
+                <h1 class="cad-headline">Verificação facial</h1>
+                <p class="cad-lead">Demonstração: deteção de rosto <strong>só no seu dispositivo</strong> (API FaceDetector quando o navegador permite). <strong>A imagem não é enviada ao servidor</strong> — apenas que concluiu o passo. Em produção: base legal (LGPD), consentimento explícito e fornecedor adequado.</p>
+                <p class="cad-lead" style="font-size: 0.88rem; margin-top: -4px">Política Guia-me: após o cadastro, a conta deve <strong>renovar esta verificação a cada 30 dias</strong> (cliente e prestador). O servidor regista a data; em produção integra-se reconhecimento / liveness certificado.</p>
+                <div class="cad-face-wrap">
+                    <video class="cad-face-video" playsinline muted></video>
+                    <canvas class="cad-face-canvas" hidden aria-hidden="true"></canvas>
+                    <div class="cad-face-row">
+                        <button type="button" class="cad-btn-secondary cad-face-btn" data-cad-face-start>Ativar câmara</button>
+                        <button type="button" class="cad-btn-secondary cad-face-btn" data-cad-face-capture disabled>Capturar e analisar</button>
+                    </div>
+                    <p class="cad-face-status" data-cad-face-status role="status" aria-live="polite"></p>
+                    <div class="cad-face-fallback" data-cad-face-fallback hidden>
+                        <label class="cad-check">
+                            <input type="checkbox" name="biometriaFaceConsentFallback" value="1">
+                            <span>Confirmo que a imagem mostra o meu rosto de frente e aceito este modo de demonstração neste site de testes.</span>
+                        </label>
+                        <button type="button" class="cad-btn-secondary cad-face-btn cad-face-btn--full" data-cad-face-manual-ok>Confirmar modo manual</button>
+                    </div>
+                </div>
+                <input type="hidden" name="biometriaFaceOk" value="">
+                <input type="hidden" name="biometriaFaceMetodo" value="">
+            </section>
+
+            <section class="cad-step" data-cad-step="5" data-cad-title="Onde você busca" data-cad-next-label="Criar conta" hidden>
+                <h1 class="cad-headline">Principal região</h1>
+                <p class="cad-lead">Como o endereço no iFood: mostramos profissionais perto deste local.</p>
+                <div class="cad-field">
+                    <span>Cidade</span>
+                    <select class="cad-select" name="cidade" required>
+                        <option value="">Selecione</option>
+                        <option selected>Rio de Janeiro — RJ</option>
+                        <option>Niterói — RJ</option>
+                        <option>São Paulo — SP</option>
+                        <option>Belo Horizonte — MG</option>
+                    </select>
+                </div>
+                <div class="cad-field">
+                    <span>Bairro ou zona</span>
+                    <select class="cad-select" name="bairro" required>
+                        <option value="">Selecione</option>
+                        <option selected>Copacabana</option>
+                        <option>Ipanema</option>
+                        <option>Tijuca</option>
+                        <option>Centro</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="cad-step cad-step--success cad-step--center" data-cad-step="6" data-cad-title="Conta criada" hidden>
+                <div class="cad-success-icon" aria-hidden="true">✓</div>
+                <h1 class="cad-headline">Bem-vindo!</h1>
+                <p class="cad-lead">Conta gravada no servidor local. Guarde a <strong>senha</strong> para <a href="login.html">entrar</a>.</p>
+                <div class="cad-links-row">
+                    <a href="login.html">Entrar</a>
+                    <a href="prototipo.html">Ir ao protótipo</a>
+                    <a href="/cliente/">Abrir app cliente</a>
+                </div>
+            </section>
+
+            <div class="cad-footer" id="cad-footer-actions">
+                <button type="button" class="cad-btn-primary" id="cad-next">Continuar</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/shared/cadastro-password-toggle.js"></script>
+    <script src="/shared/cadastro-face.js"></script>
+    <script src="/shared/cadastro.js"></script>
+    <script>
+      document.getElementById('cad-otp-demo')?.addEventListener('click', () => {
+        const boxes = document.querySelectorAll('.cad-otp-box');
+        const hidden = document.getElementById('cad-otp-value');
+        '123456'.split('').forEach((d, i) => { if (boxes[i]) boxes[i].value = d; });
+        if (hidden) hidden.value = '123456';
+      });
+    </script>
+</body>
+</html>

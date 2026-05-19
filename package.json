@@ -1,0 +1,12 @@
+{
+  "name": "guia-me-service",
+  "private": true,
+  "type": "module",
+  "description": "Guia-me Service — protótipo + API Node sem dependências npm (pedidos opcionais em SQLite nativo com Node 22.5+)",
+  "scripts": {
+    "start": "node server/index.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

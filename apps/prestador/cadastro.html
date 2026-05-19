@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cadastro de prestador — modelo tipo iFood parceiro (telefone, SMS, dados, negócio, área).">
+    <title>Criar conta · Prestador | Guia-me Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/shared/cadastro.css">
+</head>
+<body class="cadastro-body">
+    <div class="cad-shell" data-cad-total="7" data-cad-exit="/prestador/" data-cad-api="prestador" data-cad-submit-step="6">
+        <header class="cad-top">
+            <button type="button" class="cad-back" id="cad-back" aria-label="Voltar">‹</button>
+            <span class="cad-top-title" id="cad-top-title">Seja prestador</span>
+            <a href="login.html" class="cad-login-link">Entrar</a>
+        </header>
+        <div class="cad-progress-wrap">
+            <div class="cad-progress"><div class="cad-progress-fill" id="cad-progress-fill"></div></div>
+        </div>
+
+        <main class="cad-main">
+            <section class="cad-step" data-cad-step="1" data-cad-title="Celular" hidden>
+                <h1 class="cad-headline">Qual é o seu celular?</h1>
+                <p class="cad-lead">Mesmo fluxo do iFood: SMS para validar antes dos dados do negócio.</p>
+                <div class="cad-field">
+                    <span>Número com DDD</span>
+                    <div class="cad-phone-row">
+                        <div class="cad-ddi" aria-hidden="true">+55</div>
+                        <input class="cad-input" type="tel" name="celular" inputmode="numeric" autocomplete="tel-national"
+                            placeholder="11 98765-4321" required pattern="[\d\s\-()]{10,16}">
+                    </div>
+                </div>
+                <p class="cad-legal">Ao continuar, você concorda com os <a href="#">Termos para prestadores</a> e o <a href="#">Aviso de privacidade</a> (simulação).</p>
+            </section>
+
+            <section class="cad-step" data-cad-step="2" data-cad-title="Confirmação" hidden>
+                <h1 class="cad-headline">Digite o código</h1>
+                <p class="cad-lead">Código de 6 dígitos enviado por SMS (simulado).</p>
+                <div class="cad-field cad-otp-sync">
+                    <span>Código</span>
+                    <input type="hidden" name="otp" id="cad-otp-value" required pattern="\d{6}">
+                    <div class="cad-otp-row" role="group" aria-label="Código SMS">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 1">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 2">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 3">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 4">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 5">
+                        <input class="cad-otp-box" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 6">
+                    </div>
+                </div>
+                <p class="cad-resend"><button type="button" id="cad-resend">Reenviar código</button> ·
+                    <button type="button" id="cad-otp-demo" style="background:none;border:none;color:var(--color-accent);font-weight:600;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0">Usar 123456 (demo)</button></p>
+            </section>
+
+            <section class="cad-step" data-cad-step="3" data-cad-title="Responsável" hidden>
+                <h1 class="cad-headline">Dados do responsável</h1>
+                <p class="cad-lead">Titular da conta e contato oficial (como cadastro de parceiro).</p>
+                <div class="cad-field">
+                    <span>Nome completo</span>
+                    <input class="cad-input" type="text" name="nome" autocomplete="name" required minlength="3">
+                </div>
+                <div class="cad-field">
+                    <span>Senha da conta</span>
+                    <div class="cad-password-wrap">
+                        <input class="cad-input" id="cad-prestador-password" type="password" name="password" autocomplete="new-password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                        <button type="button" class="cad-password-toggle" data-password-target="cad-prestador-password" aria-label="Mostrar senha" title="Mostrar senha">
+                            <span aria-hidden="true">👁</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="cad-field">
+                    <span>CPF</span>
+                    <input class="cad-input" type="text" name="cpf" inputmode="numeric" placeholder="000.000.000-00" required pattern="[\d.\-]{11,14}">
+                </div>
+                <div class="cad-field">
+                    <span>E-mail comercial</span>
+                    <input class="cad-input" type="email" name="email" autocomplete="email" required>
+                </div>
+            </section>
+
+            <section class="cad-step cad-step-face" data-cad-step="4" data-cad-title="Rosto" hidden>
+                <h1 class="cad-headline">Verificação facial</h1>
+                <p class="cad-lead">Demonstração: deteção de rosto <strong>só no seu dispositivo</strong> (API FaceDetector quando o navegador permite). <strong>A imagem não é enviada ao servidor</strong> — apenas que concluiu o passo. Em produção: base legal (LGPD), consentimento explícito e fornecedor adequado.</p>
+                <p class="cad-lead" style="font-size: 0.88rem; margin-top: -4px">Política Guia-me: após o cadastro, a conta deve <strong>renovar esta verificação a cada 30 dias</strong> (cliente e prestador). O servidor regista a data; em produção integra-se reconhecimento / liveness certificado.</p>
+                <div class="cad-face-wrap">
+                    <video class="cad-face-video" playsinline muted></video>
+                    <canvas class="cad-face-canvas" hidden aria-hidden="true"></canvas>
+                    <div class="cad-face-row">
+                        <button type="button" class="cad-btn-secondary cad-face-btn" data-cad-face-start>Ativar câmara</button>
+                        <button type="button" class="cad-btn-secondary cad-face-btn" data-cad-face-capture disabled>Capturar e analisar</button>
+                    </div>
+                    <p class="cad-face-status" data-cad-face-status role="status" aria-live="polite"></p>
+                    <div class="cad-face-fallback" data-cad-face-fallback hidden>
+                        <label class="cad-check">
+                            <input type="checkbox" name="biometriaFaceConsentFallback" value="1">
+                            <span>Confirmo que a imagem mostra o meu rosto de frente e aceito este modo de demonstração neste site de testes.</span>
+                        </label>
+                        <button type="button" class="cad-btn-secondary cad-face-btn cad-face-btn--full" data-cad-face-manual-ok>Confirmar modo manual</button>
+                    </div>
+                </div>
+                <input type="hidden" name="biometriaFaceOk" value="">
+                <input type="hidden" name="biometriaFaceMetodo" value="">
+            </section>
+
+            <section class="cad-step" data-cad-step="5" data-cad-title="Seu serviço" hidden>
+                <h1 class="cad-headline">Como você aparece no app</h1>
+                <p class="cad-lead">Nome público, <strong>CNPJ do Cartão CNPJ</strong> (obrigatório), <strong>categorias e serviços</strong>, <strong>valores de referência</strong> (hora, diária ou fixo, se quiser) e <strong>outras categorias</strong> por escrito — o cliente filtra por isso.</p>
+                <div class="cad-field">
+                    <span>Nome no app (nome fantasia)</span>
+                    <input class="cad-input" type="text" name="fantasia" placeholder="Ex.: Elétrica Souza" required minlength="2">
+                </div>
+                <div class="cad-field">
+                    <span>CNPJ (14 dígitos — como no Cartão CNPJ / Receita Federal)</span>
+                    <input class="cad-input" type="text" name="cnpj" inputmode="numeric" placeholder="11.222.333/0001-81 (exemplo válido)" required pattern="[\d.\s\/-]{14,22}" title="14 dígitos com dígitos verificadores válidos">
+                </div>
+                <div class="cad-field">
+                    <span>NIRE ou nº de registro no Cartão CNPJ (se constar)</span>
+                    <input class="cad-input" type="text" name="cartao_cnpj_nire" autocomplete="off" placeholder="Opcional — Junta Comercial / registro mercantil" maxlength="32">
+                </div>
+                <p class="cad-chips-note">Use a <strong>categoria</strong> para filtrar, marque <strong>um ou mais tipos de serviço</strong> do catálogo, preencha <strong>valores de referência</strong> se quiser e use <strong>outras categorias</strong> para nomes novos.</p>
+                <div id="cad-servicos-catalogo-wrap" class="servicos-catalogo-wrap" data-servicos-catalogo data-servicos-permite-extra>
+                    <p class="cad-chips-note">Categoria</p>
+                    <div class="chips chips-categoria chips-categoria-scroll" role="group" aria-label="Categoria" data-single="true"></div>
+                    <p class="cad-chips-note">Tipos de serviço (pode marcar vários)</p>
+                    <div class="chips chips-servico chips-scroll" role="group" aria-label="Tipos de serviço"></div>
+                </div>
+                <div class="cad-field cad-pricing-block">
+                    <span>Valores de referência (opcional)</span>
+                    <p class="cad-chips-note">Indique como costuma cobrar: <strong>por hora</strong>, <strong>diária</strong> ou <strong>preço fixo</strong> (serviço fechado). Preencha só o que usar; o cliente vê no perfil antes de pedir.</p>
+                    <div class="cad-pricing-grid">
+                        <label class="cad-pricing-row">
+                            <span class="cad-pricing-label">Por hora (R$)</span>
+                            <input class="cad-input" type="number" name="preco_hora" min="0" step="0.01" placeholder="Ex.: 85" inputmode="decimal">
+                        </label>
+                        <label class="cad-pricing-row">
+                            <span class="cad-pricing-label">Por diária (R$)</span>
+                            <input class="cad-input" type="number" name="preco_diaria" min="0" step="0.01" placeholder="Ex.: 350" inputmode="decimal">
+                        </label>
+                        <label class="cad-pricing-row">
+                            <span class="cad-pricing-label">Preço fixo típico (R$)</span>
+                            <input class="cad-input" type="number" name="preco_fixo" min="0" step="0.01" placeholder="Ex.: 120 (visita)" inputmode="decimal">
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="cad-step" data-cad-step="6" data-cad-title="Onde atende" data-cad-next-label="Concluir cadastro" hidden>
+                <h1 class="cad-headline">Área de atendimento</h1>
+                <p class="cad-lead">Só recebe pedidos da cidade e bairros que marcar (modelo iFood: raio / região).</p>
+                <div class="cad-field">
+                    <span>Cidade base</span>
+                    <select class="cad-select" name="cidade_base" required>
+                        <option value="">Selecione</option>
+                        <option selected>Rio de Janeiro — RJ</option>
+                        <option>Niterói — RJ</option>
+                        <option>São Paulo — SP</option>
+                        <option>Belo Horizonte — MG</option>
+                    </select>
+                </div>
+                <p class="cad-chips-note">Bairros atendidos (pode marcar vários)</p>
+                <div class="chips" role="group" aria-label="Bairros">
+                    <button type="button" class="chip chip--active">Copacabana</button>
+                    <button type="button" class="chip">Ipanema</button>
+                    <button type="button" class="chip">Tijuca</button>
+                    <button type="button" class="chip">Centro</button>
+                    <button type="button" class="chip">Barra da Tijuca</button>
+                    <button type="button" class="chip">Botafogo</button>
+                </div>
+                <label class="cad-check">
+                    <input type="checkbox" name="termos" required>
+                    <span>Declaro que as informações são verdadeiras e aceito os <a href="#" onclick="event.stopPropagation()">Termos para prestadores</a> e a <a href="#" onclick="event.stopPropagation()">Política de privacidade</a>.</span>
+                </label>
+            </section>
+
+            <section class="cad-step cad-step--success cad-step--center" data-cad-step="7" data-cad-title="Cadastro recebido" hidden>
+                <div class="cad-success-icon" aria-hidden="true">✓</div>
+                <h1 class="cad-headline">Estamos analisando</h1>
+                <p class="cad-lead">No iFood, a loja passa por aprovação; aqui simulamos a mesma ideia: em breve você recebe e-mail para concluir documentação e ficar no ar.</p>
+                <p class="cad-lead">Cadastro gravado localmente. Use o mesmo celular e <strong>senha</strong> em <a href="login.html">Entrar</a>.</p>
+                <div class="cad-links-row">
+                    <a href="/prestador/">Voltar ao app</a>
+                </div>
+            </section>
+
+            <div class="cad-footer" id="cad-footer-actions">
+                <button type="button" class="cad-btn-primary" id="cad-next">Continuar</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/shared/script.js"></script>
+    <script src="/shared/servicos-catalogo.js"></script>
+    <script src="/shared/cadastro-password-toggle.js"></script>
+    <script src="/shared/cadastro-face.js"></script>
+    <script src="/shared/cadastro.js"></script>
+    <script>
+      document.getElementById('cad-otp-demo')?.addEventListener('click', () => {
+        const boxes = document.querySelectorAll('.cad-otp-box');
+        const hidden = document.getElementById('cad-otp-value');
+        '123456'.split('').forEach((d, i) => { if (boxes[i]) boxes[i].value = d; });
+        if (hidden) hidden.value = '123456';
+      });
+    </script>
+</body>
+</html>

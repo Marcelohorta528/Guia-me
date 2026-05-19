@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar · Cliente | Guia-me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/shared/cadastro.css">
+</head>
+<body class="cadastro-body">
+    <div class="cad-shell" data-cad-exit="/cliente/" style="min-height: auto">
+        <header class="cad-top">
+            <button type="button" class="cad-back" id="login-back" aria-label="Voltar">‹</button>
+            <span class="cad-top-title">Entrar</span>
+            <a href="cadastro.html" class="cad-login-link">Criar conta</a>
+        </header>
+
+        <main class="cad-main" style="padding-top: 32px">
+            <h1 class="cad-headline">Acesse a sua conta</h1>
+            <p class="cad-lead">App <strong>cliente</strong> — use o celular e a <strong>senha</strong> do seu cadastro (API em <strong>http://localhost:3333</strong>).</p>
+            <p class="cad-legal" style="margin-top: 8px">É prestador? <a href="/prestador/login.html">Entrar no app prestador</a></p>
+
+            <div class="cad-field">
+                <span>Celular (DDD + número)</span>
+                <input class="cad-input" type="tel" id="login-celular" inputmode="numeric" autocomplete="tel-national" placeholder="11 98765-4321" required>
+            </div>
+            <div class="cad-field">
+                <span>Senha</span>
+                <div class="cad-password-wrap">
+                    <input class="cad-input" type="password" id="login-password" autocomplete="current-password" required>
+                    <button type="button" class="cad-password-toggle" data-password-target="login-password" aria-label="Mostrar senha" title="Mostrar senha">
+                        <span aria-hidden="true">👁</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="cad-footer" style="padding-top: 8px">
+                <button type="button" class="cad-btn-primary" id="login-btn">Entrar</button>
+            </div>
+
+            <pre id="login-result" class="cad-legal" style="margin-top: 20px; white-space: pre-wrap; word-break: break-all; display: none"></pre>
+
+            <section id="login-av-wrap" style="display: none; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--color-border)">
+                <h2 class="cad-headline" style="font-size: 1.15rem">Avaliações na API</h2>
+                <p class="cad-lead" style="margin-top: 4px">Modelo Uber: <strong>cliente avalia prestador</strong> ou o contrário. Grava em <code>server/data/store.json</code>.</p>
+
+                <div class="reputation-card" style="margin-top: 14px">
+                    <h3 style="font-size: 0.95rem; margin: 0 0 8px">Recebidas por si</h3>
+                    <button type="button" class="cad-btn-primary" id="login-av-refresh" style="margin-bottom: 10px">Atualizar lista</button>
+                    <pre id="login-av-recebidas" class="cad-legal" style="white-space: pre-wrap; word-break: break-word; max-height: 220px; overflow: auto; margin: 0; font-size: 0.8rem"></pre>
+                </div>
+
+                <div class="reputation-card" style="margin-top: 14px">
+                    <h3 style="font-size: 0.95rem; margin: 0 0 8px">Enviar avaliação</h3>
+                    <p class="cad-legal" style="margin: 0 0 10px">Cole o <strong>accountId</strong> (UUID) da <em>outra</em> conta — ex.: do JSON acima após login noutro browser, ou de <code>store.json</code>.</p>
+                    <label class="cad-field">
+                        <span>ID da conta a avaliar</span>
+                        <input class="cad-input" type="text" id="login-av-target" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off">
+                    </label>
+                    <label class="cad-field">
+                        <span>Nota (1 a 5)</span>
+                        <select class="cad-select" id="login-av-rating">
+                            <option value="5">5 — Excelente</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
+                        </select>
+                    </label>
+                    <label class="cad-field">
+                        <span>Comentário (mín. 3 caracteres)</span>
+                        <textarea class="cad-input" id="login-av-comment" rows="3" placeholder="Ex.: Atendimento rápido e profissional." style="min-height: 72px; resize: vertical"></textarea>
+                    </label>
+                    <button type="button" class="cad-btn-primary" id="login-av-send">Enviar avaliação</button>
+                    <p id="login-av-msg" class="cad-legal" style="margin-top: 10px" role="status"></p>
+                </div>
+            </section>
+    </div>
+
+    <script src="/shared/cadastro-password-toggle.js"></script>
+    <script>
+      function mascaraCpfOuCnpj(val) {
+        const d = String(val || '').replace(/\D/g, '');
+        if (d.length === 11) return `***.***.${d.slice(6, 9)}-**`;
+        if (d.length === 14) return `${d.slice(0, 2)}.***.***/****-${d.slice(12)}`;
+        return val ? '***' : '';
+      }
+
+      function resumoContaParaExibir(j, me) {
+        const p = me.perfil || {};
+        const perfil = { ...p };
+        if (perfil.documento_id) {
+          const s = String(perfil.documento_id);
+          perfil.documento_id = s.length <= 4 ? '****' : `***${s.slice(-4)}`;
+        }
+        if (perfil.cpf) perfil.cpf = mascaraCpfOuCnpj(perfil.cpf);
+        if (perfil.cnpj) perfil.cnpj = mascaraCpfOuCnpj(perfil.cnpj);
+        return {
+          token: j.token,
+          tipo: j.tipo,
+          accountId: me.accountId,
+          telefone: me.telefone,
+          perfil,
+          biometriaFacial: me.biometriaFacial,
+        };
+      }
+
+      document.getElementById('login-back')?.addEventListener('click', () => {
+        window.location.href = '/cliente/';
+      });
+
+      document.getElementById('login-btn')?.addEventListener('click', async () => {
+        const celular = document.getElementById('login-celular')?.value;
+        const password = document.getElementById('login-password')?.value;
+        const out = document.getElementById('login-result');
+        const avWrap = document.getElementById('login-av-wrap');
+        if (!celular || !password) {
+          alert('Preencha celular e senha.');
+          return;
+        }
+        try {
+          const r = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ celular, password }),
+          });
+          const j = await r.json();
+          if (!r.ok) throw new Error(j.error || 'Falha no login');
+          const meRes = await fetch('/api/auth/me', {
+            headers: { Authorization: 'Bearer ' + j.token },
+          });
+          const me = await meRes.json();
+          if (!meRes.ok || !me.ok) throw new Error(me.error || 'Sessão inválida');
+          if (me.biometriaFacial?.precisaRenovar) {
+            sessionStorage.setItem('guiame_token_renovacao', j.token);
+            window.location.href = 'renovar-biometria.html';
+            return;
+          }
+          sessionStorage.setItem('guiame_auth_token', j.token);
+          if (me.tipo && me.tipo !== 'cliente') {
+            sessionStorage.removeItem('guiame_auth_token');
+            alert('Esta conta é de prestador. Use o app em /prestador/login.html');
+            return;
+          }
+          window.location.href = '/cliente/';
+        } catch (e) {
+          alert((e && e.message) + '\n\nAbra esta página via servidor: .\\iniciar-com-api.ps1 ou .\\iniciar-com-api.cmd');
+        }
+      });
+
+      async function refreshRecebidas() {
+        const pre = document.getElementById('login-av-recebidas');
+        const tok = window.__loginToken;
+        if (!tok || !pre) return;
+        pre.textContent = 'A carregar…';
+        try {
+          const r = await fetch('/api/avaliacoes/recebidas', {
+            headers: { Authorization: 'Bearer ' + tok },
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error || r.statusText);
+          pre.textContent = JSON.stringify({ stats: d.stats, reviews: d.reviews }, null, 2);
+        } catch (e) {
+          pre.textContent = String(e.message || e);
+        }
+      }
+
+      document.getElementById('login-av-refresh')?.addEventListener('click', () => {
+        refreshRecebidas();
+      });
+
+      document.getElementById('login-av-send')?.addEventListener('click', async () => {
+        const tok = window.__loginToken;
+        const msg = document.getElementById('login-av-msg');
+        const target = document.getElementById('login-av-target')?.value?.trim();
+        const rating = Number(document.getElementById('login-av-rating')?.value);
+        const comment = document.getElementById('login-av-comment')?.value?.trim();
+        if (!tok) {
+          if (msg) msg.textContent = 'Faça login primeiro.';
+          return;
+        }
+        if (!target) {
+          if (msg) msg.textContent = 'Indique o ID (UUID) da conta a avaliar.';
+          return;
+        }
+        try {
+          const r = await fetch('/api/avaliacoes', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + tok,
+            },
+            body: JSON.stringify({ targetAccountId: target, rating, comment }),
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error || r.statusText);
+          if (msg) msg.textContent = 'Avaliação gravada. id: ' + d.id;
+          document.getElementById('login-av-comment').value = '';
+          await refreshRecebidas();
+        } catch (e) {
+          if (msg) msg.textContent = String(e.message || e);
+        }
+      });
+    </script>
+</body>
+</html>

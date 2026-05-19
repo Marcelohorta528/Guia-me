@@ -1,0 +1,6 @@
+server/data/store.json
+server/data/cadastros.json
+server/data/guiame.db
+server/data/*.db-shm
+server/data/*.db-wal
+.env

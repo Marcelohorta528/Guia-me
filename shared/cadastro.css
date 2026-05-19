@@ -1,0 +1,520 @@
+/* Cadastro estilo app (referência: fluxo iFood — telefone, SMS, dados, confirmação) */
+
+.cadastro-body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 0 24px;
+}
+
+.cad-shell {
+    width: 100%;
+    max-width: 440px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-soft);
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+}
+
+@media (min-width: 480px) {
+    .cadastro-body {
+        padding: 24px 16px;
+    }
+
+    .cad-shell {
+        min-height: min(100vh - 48px, 900px);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-border);
+        overflow: hidden;
+    }
+}
+
+.cad-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(8px);
+    flex-shrink: 0;
+}
+
+.cad-back {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    color: var(--color-text);
+    font-size: 1.35rem;
+    line-height: 1;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cad-back:hover {
+    background: var(--color-bg-card);
+}
+
+.cad-back:disabled {
+    opacity: 0.25;
+    cursor: default;
+}
+
+.cad-top-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+    padding: 0 8px;
+}
+
+.cad-login-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    white-space: nowrap;
+}
+
+.cad-login-link:hover {
+    text-decoration: underline;
+}
+
+.cad-progress-wrap {
+    padding: 12px 16px 0;
+}
+
+.cad-progress {
+    height: 3px;
+    background: var(--color-border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.cad-progress-fill {
+    height: 100%;
+    background: var(--color-accent);
+    border-radius: 3px;
+    transition: width 0.25s ease;
+    width: 20%;
+}
+
+.cad-main {
+    flex: 1;
+    padding: 24px 20px 32px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#cad-footer-actions {
+    margin-top: auto;
+    flex-shrink: 0;
+    padding-top: 8px;
+}
+
+.cad-step {
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    animation: cad-fade 0.22s ease;
+}
+
+.cad-step:not([hidden]) {
+    display: flex;
+}
+
+@keyframes cad-fade {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cad-headline {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.cad-lead {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin: -8px 0 0;
+}
+
+.cad-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cad-field span {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.cad-input,
+.cad-select {
+    font-family: inherit;
+    font-size: 1.05rem;
+    padding: 16px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    width: 100%;
+}
+
+.cad-input:focus,
+.cad-select:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 0;
+}
+
+.cad-input--mono {
+    letter-spacing: 0.35em;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    font-size: 1.25rem;
+}
+
+.cad-phone-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+}
+
+.cad-ddi {
+    width: 72px;
+    flex-shrink: 0;
+    text-align: center;
+    font-weight: 600;
+    padding: 16px 8px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.cad-otp-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.cad-otp-box {
+    width: 44px;
+    height: 52px;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: inherit;
+}
+
+.cad-otp-box:focus {
+    outline: 2px solid var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.cad-resend {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin: 0;
+}
+
+.cad-resend button {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.cad-footer {
+    margin-top: auto;
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cad-btn-primary {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 16px;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--color-accent);
+    color: #1a1508;
+    cursor: pointer;
+}
+
+.cad-btn-primary:hover {
+    background: var(--color-accent-hover);
+}
+
+.cad-btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.cad-legal {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.cad-legal a {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
+.cad-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.cad-check a {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.cad-check input {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-accent);
+}
+
+.cad-success-icon {
+    width: 72px;
+    height: 72px;
+    margin: 16px auto 8px;
+    border-radius: 50%;
+    background: rgba(232, 197, 71, 0.12);
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+    font-size: 2.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cad-step--center {
+    text-align: center;
+    align-items: center;
+}
+
+.cad-step--center .cad-headline,
+.cad-step--center .cad-lead {
+    max-width: 100%;
+}
+
+.cad-links-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.cad-links-row a {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.cad-links-row a:first-child {
+    background: var(--color-accent);
+    color: #1a1508;
+    border-color: transparent;
+}
+
+.cad-links-row a:hover {
+    filter: brightness(1.08);
+}
+
+.cad-chips-note {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin: -4px 0 0;
+}
+
+.cad-btn-secondary {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.cad-btn-secondary:hover {
+    background: var(--color-bg-soft);
+}
+
+.cad-btn-secondary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.cad-face-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cad-face-video {
+    width: 100%;
+    max-height: 220px;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    background: #0a0a0a;
+    object-fit: cover;
+    aspect-ratio: 4 / 3;
+}
+
+.cad-face-video--hidden {
+    display: none;
+}
+
+.cad-face-canvas {
+    display: none;
+}
+
+.cad-face-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cad-face-btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+.cad-face-btn--full {
+    flex: 1 1 100%;
+}
+
+.cad-face-status {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    min-height: 2.5em;
+    line-height: 1.4;
+}
+
+.cad-pricing-block {
+    margin-top: 8px;
+}
+
+.cad-pricing-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.cad-pricing-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cad-pricing-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.cad-face-fallback {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 4px;
+}
+
+/* Senha: mostrar/ocultar (ícone olho) */
+.cad-password-wrap {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+.cad-password-wrap .cad-input {
+    width: 100%;
+    padding-right: 48px;
+    box-sizing: border-box;
+}
+
+.cad-password-toggle {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: var(--color-bg-card);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.cad-password-toggle:hover {
+    background: var(--color-border);
+    color: var(--color-text);
+}
+
+.cad-password-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}

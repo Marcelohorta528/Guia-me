@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Renovar verificação facial — Guia-me Service (ciclo mensal).">
+    <title>Renovar verificação facial | Guia-me Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/shared/cadastro.css">
+</head>
+<body class="cadastro-body">
+    <div class="cad-shell" data-cad-face-standalone="1" data-cad-exit="login.html" style="min-height: auto">
+        <header class="cad-top">
+            <button type="button" class="cad-back" id="bio-back" aria-label="Voltar">‹</button>
+            <span class="cad-top-title">Verificação facial</span>
+            <a href="login.html" class="cad-login-link">Entrar</a>
+        </header>
+
+        <main class="cad-main" style="padding-top: 24px">
+            <div id="bio-sem-token" hidden>
+                <h1 class="cad-headline">Sessão necessária</h1>
+                <p class="cad-lead">Faça <a href="login.html">login</a> com uma conta cuja verificação facial precise ser renovada (ciclo de 30 dias). O site de login redireciona automaticamente para esta página quando aplicável.</p>
+            </div>
+
+            <div id="bio-com-token">
+                <h1 class="cad-headline">Renovar verificação facial</h1>
+                <p class="cad-lead">Política do Guia-me Service: <strong>clientes e prestadores</strong> confirmam identidade com a câmara em intervalos de <strong>30 dias</strong> (ajustável no servidor). Isto reduz fraude e mantém o perfil ativo. Checklist para contratar KYC: <a href="/KYC-INTEGRACAO.md">KYC-INTEGRACAO.md</a>.</p>
+                <p class="cad-lead" style="font-size: 0.9rem">Em <strong>produção</strong> costuma integrar-se um fornecedor certificado (liveness, comparação 1:1 com template guardado). Aqui continua a demonstração <strong>só no dispositivo</strong>, sem envio da imagem.</p>
+
+                <section class="cad-step cad-step-face" data-cad-step="4" data-cad-title="Rosto">
+                    <div class="cad-face-wrap">
+                        <video class="cad-face-video" playsinline muted></video>
+                        <canvas class="cad-face-canvas" hidden aria-hidden="true"></canvas>
+                        <div class="cad-face-row">
+                            <button type="button" class="cad-btn-secondary cad-face-btn" data-cad-face-start>Ativar câmara</button>
+                            <button type="button" class="cad-btn-secondary cad-face-btn" data-cad-face-capture disabled>Capturar e analisar</button>
+                        </div>
+                        <p class="cad-face-status" data-cad-face-status role="status" aria-live="polite"></p>
+                        <div class="cad-face-fallback" data-cad-face-fallback hidden>
+                            <label class="cad-check">
+                                <input type="checkbox" name="biometriaFaceConsentFallback" value="1">
+                                <span>Confirmo que a imagem mostra o meu rosto de frente e aceito este modo de demonstração neste site de testes.</span>
+                            </label>
+                            <button type="button" class="cad-btn-secondary cad-face-btn cad-face-btn--full" data-cad-face-manual-ok>Confirmar modo manual</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="biometriaFaceOk" value="">
+                    <input type="hidden" name="biometriaFaceMetodo" value="">
+                </section>
+
+                <div class="cad-footer" style="padding-top: 16px">
+                    <button type="button" class="cad-btn-primary" id="bio-enviar">Concluir renovação na API</button>
+                </div>
+                <p id="bio-msg" class="cad-legal" style="margin-top: 16px" role="status"></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="/shared/cadastro-face.js"></script>
+    <script>
+      const KEY = 'guiame_token_renovacao';
+
+      document.getElementById('bio-back')?.addEventListener('click', () => {
+        window.location.href = 'login.html';
+      });
+
+      function panel() {
+        return document.querySelector('[data-cad-face-standalone] .cad-step-face');
+      }
+
+      document.getElementById('bio-enviar')?.addEventListener('click', async () => {
+        const p = panel();
+        const ok = p?.querySelector('input[name="biometriaFaceOk"]')?.value;
+        const metodo = p?.querySelector('input[name="biometriaFaceMetodo"]')?.value || '';
+        const msg = document.getElementById('bio-msg');
+        const token = sessionStorage.getItem(KEY);
+        if (!token) {
+          if (msg) msg.textContent = 'Sessão em falta. Volte ao login.';
+          return;
+        }
+        if (ok !== '1') {
+          window.alert('Conclua primeiro a captura ou o modo manual (mesmo fluxo do cadastro).');
+          return;
+        }
+        try {
+          const r = await fetch('/api/auth/biometria-renovar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + token,
+            },
+            body: JSON.stringify({ biometriaFaceOk: '1', biometriaFaceMetodo: metodo }),
+          });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.error || r.statusText);
+          sessionStorage.setItem('guiame_auth_token', token);
+          sessionStorage.removeItem(KEY);
+          if (msg) {
+            msg.textContent =
+              'Renovação gravada. Sessão mantida — volte ao app em /prestador/. Próxima obrigatória daqui a 30 dias.';
+          }
+          document.getElementById('bio-enviar').disabled = true;
+        } catch (e) {
+          if (msg) msg.textContent = String(e.message || e);
+        }
+      });
+
+      (function boot() {
+        const token = sessionStorage.getItem(KEY);
+        const sem = document.getElementById('bio-sem-token');
+        const com = document.getElementById('bio-com-token');
+        if (!token) {
+          if (sem) sem.hidden = false;
+          if (com) com.hidden = true;
+        } else {
+          if (sem) sem.hidden = true;
+          if (com) com.hidden = false;
+        }
+      })();
+    </script>
+</body>
+</html>
