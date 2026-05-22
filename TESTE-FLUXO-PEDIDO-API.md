@@ -4,7 +4,7 @@ Roteiro para validar no browser: **orçamento de referência no pedido**, **rela
 
 ## Pré-requisitos
 
-- Servidor Node: na pasta `app-servico`, `npm start` (porta **3333** por omissão).
+- Servidor Node: na pasta raiz `Guia-me`, `npm start` (porta **3333** por omissão).
 - Confirme: `http://localhost:3333/api/health` → `"ok": true`.
 - **Duas sessões:** janela normal + **janela anónima** (ou dois browsers), para cliente e prestador ao mesmo tempo.
 

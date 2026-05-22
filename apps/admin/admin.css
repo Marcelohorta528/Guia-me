@@ -1,0 +1,236 @@
+.admin-body {
+    background: var(--color-bg);
+}
+
+.admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(15, 15, 15, 0.95);
+    border-bottom: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+}
+
+.admin-header__inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.admin-logo {
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.admin-logo span {
+    color: var(--color-accent);
+}
+
+.admin-sub {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+.admin-header__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-main {
+    max-width: 1280px;
+    padding-top: 24px;
+    padding-bottom: 48px;
+}
+
+.card {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.admin-auth h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.admin-auth__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.admin-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-soft);
+    color: var(--color-text);
+    font: inherit;
+}
+
+.admin-error {
+    color: #f87171;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-stat {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.admin-stat strong {
+    display: block;
+    font-size: 1.75rem;
+    color: var(--color-accent);
+    line-height: 1.2;
+}
+
+.admin-stat span {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+.admin-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.admin-filter--grow {
+    flex: 1;
+    min-width: 200px;
+}
+
+.admin-filter select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-soft);
+    color: var(--color-text);
+    font: inherit;
+}
+
+.admin-table-wrap {
+    padding: 0;
+    overflow: hidden;
+}
+
+.admin-table-scroll {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.admin-table th {
+    background: var(--color-bg-soft);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(232, 197, 71, 0.06);
+}
+
+.admin-table .cell-wrap {
+    white-space: normal;
+    max-width: 160px;
+}
+
+.admin-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.admin-badge--novo {
+    background: rgba(96, 165, 250, 0.2);
+    color: #93c5fd;
+}
+
+.admin-badge--aceito {
+    background: rgba(232, 197, 71, 0.2);
+    color: var(--color-accent);
+}
+
+.admin-badge--concluido {
+    background: rgba(74, 222, 128, 0.15);
+    color: #86efac;
+}
+
+.admin-money {
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-money--empty {
+    color: var(--color-text-muted);
+}
+
+.admin-detail-hint summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.admin-detail-hint ul {
+    margin-top: 10px;
+    padding-left: 1.2rem;
+}
+
+#loading,
+#empty {
+    padding: 24px;
+}
+
+@media (max-width: 720px) {
+    .admin-table th,
+    .admin-table td {
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+}

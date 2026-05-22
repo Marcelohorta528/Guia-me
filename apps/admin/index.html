@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia-me | Painel de transações</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin-body">
+    <header class="admin-header">
+        <div class="admin-header__inner">
+            <div>
+                <a href="/" class="admin-logo">Guia-me <span>Backend</span></a>
+                <p class="admin-sub">Transações entre cliente e prestador</p>
+            </div>
+            <div class="admin-header__actions">
+                <a href="/" class="btn btn-secondary btn-small">Portal</a>
+                <a href="/cliente/" class="btn btn-secondary btn-small">Cliente</a>
+                <a href="/prestador/" class="btn btn-secondary btn-small">Prestador</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main container">
+        <section class="admin-auth card" id="auth-panel">
+            <h2>Acesso ao painel</h2>
+            <p class="muted small">Chave definida em <code>ADMIN_KEY</code> no <code>server/.env</code> (padrão local: <code>guia-me-dev</code>).</p>
+            <div class="admin-auth__row">
+                <input type="password" id="admin-key" class="admin-input" placeholder="Chave de administrador" autocomplete="off">
+                <button type="button" id="btn-enter" class="btn btn-primary">Entrar</button>
+            </div>
+            <p id="auth-error" class="admin-error" hidden></p>
+        </section>
+
+        <section id="dashboard" hidden>
+            <div class="admin-stats" id="stats"></div>
+
+            <div class="admin-toolbar card">
+                <label class="admin-filter">
+                    <span>Status</span>
+                    <select id="filter-status">
+                        <option value="">Todos</option>
+                        <option value="novo">Na fila</option>
+                        <option value="aceito">Em negociação</option>
+                        <option value="concluido">Concluído</option>
+                    </select>
+                </label>
+                <label class="admin-filter admin-filter--grow">
+                    <span>Buscar</span>
+                    <input type="search" id="filter-search" class="admin-input" placeholder="Cliente, prestador, cidade, ID…">
+                </label>
+            </div>
+
+            <div class="card admin-table-wrap">
+                <p id="loading" class="muted">A carregar transações…</p>
+                <p id="empty" class="muted" hidden>Nenhuma transação encontrada.</p>
+                <div class="admin-table-scroll" id="table-wrap" hidden>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Cliente</th>
+                                <th>Prestador</th>
+                                <th>Status</th>
+                                <th>Local</th>
+                                <th>Serviço</th>
+                                <th>Orçamento</th>
+                                <th>Desloc.</th>
+                                <th>Taxa aceite</th>
+                                <th>Comissão</th>
+                                <th>Líquido prest.</th>
+                                <th>Taxa fech.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <details class="card admin-detail-hint">
+                <summary>Legenda</summary>
+                <ul class="small muted">
+                    <li><strong>Taxa aceite</strong> — cobrada do cliente no aceite (km ida+volta + US$ 5 plataforma).</li>
+                    <li><strong>Comissão</strong> — 15% sobre o valor do serviço (≥ R$ 100).</li>
+                    <li><strong>Taxa fech.</strong> — US$ 10 cobrados do prestador na conclusão.</li>
+                </ul>
+            </details>
+        </section>
+    </main>
+
+    <script src="/admin/admin.js" type="module"></script>
+</body>
+</html>

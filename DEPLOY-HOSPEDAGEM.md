@@ -11,21 +11,21 @@ Guia para colocar o projeto **online com HTTPS** (link para terceiros testarem n
 ## O que precisa
 
 1. Conta gratuita no [GitHub](https://github.com) e no [Render](https://render.com).
-2. O código do projeto num repositório Git (pasta `app-servico` como **raiz** do repositório, ou ajuste `rootDir` no Render).
+2. O código do projeto num repositório Git (pasta **`Guia-me`** como **raiz** do repositório, ou ajuste `rootDir` no Render).
 3. **Git** no PC (ou [GitHub Desktop](https://desktop.github.com)) para enviar o código.
 
 ---
 
 ## Passo 1 — Subir o código para o GitHub (automático)
 
-Na pasta `app-servico`, execute:
+Na pasta raiz do projeto, execute:
 
 ```powershell
-cd "d:\Marcelo\TUDO\Marketing Digital\Cursor\app-servico"
+cd C:\Users\PC\Guia-me
 .\publicar-guia-me.ps1
 ```
 
-O script instala Git/GitHub CLI se faltar, abre login no browser, cria o repo **`guia-me-service`** e faz push. Código em `%USERPROFILE%\guia-me-service-deploy`.
+O script instala Git/GitHub CLI se faltar, abre login no browser, cria o repo **`guia-me-service`** e faz push. Código em `%USERPROFILE%\Guia-me`.
 
 **Nota:** `server/data/store.json` e `guiame.db` estão no `.gitignore` (correto — cada ambiente cria os seus dados).
 
@@ -46,7 +46,7 @@ O script instala Git/GitHub CLI se faltar, abre login no browser, cria o repo **
 
 | Campo | Valor |
 |--------|--------|
-| **Root Directory** | *(vazio se o repo é só `app-servico`; senão `app-servico`)* |
+| **Root Directory** | *(vazio se o repo é só a raiz `Guia-me`; senão o subcaminho no repo)* |
 | **Runtime** | Node |
 | **Build Command** | *(vazio)* |
 | **Start Command** | `npm start` |

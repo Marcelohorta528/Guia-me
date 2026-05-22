@@ -4,7 +4,7 @@ Gravação em cima de **`prototipo.html`** (abra no Chrome ou Edge antes de come
 
 ## Antes de gravar
 
-1. Abra `prototipo.html` (pasta `app-servico`). Se usar servidor: `.\servidor-local.ps1`.
+1. Abra `prototipo.html` (pasta `Guia-me`). Se usar servidor: `.\servidor-local.ps1`.
 2. Janela do navegador em tamanho **médio** (o “celular” do protótipo já aparece centrado).
 3. **Loom / OBS**: captura da **janela do browser** só (evita barra de tarefas cheia de ícones) ou região em volta do telefone fictício.
 4. Microfone: opcional; pode gravar só tela e legendar depois.

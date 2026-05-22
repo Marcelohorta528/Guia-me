@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 $ProjectRoot = $PSScriptRoot
-$DeployDir = Join-Path $env:USERPROFILE "guia-me-service-deploy"
+$DeployDir = Join-Path $env:USERPROFILE "Guia-me"
 $Git = "C:\Program Files\Git\bin\git.exe"
 $Gh = "C:\Program Files\GitHub CLI\gh.exe"
 $RepoName = "guia-me-service"
@@ -19,11 +19,13 @@ function Ensure-Tool($path, $wingetId, $name) {
 $Git = Ensure-Tool $Git "Git.Git" "Git"
 $Gh = Ensure-Tool $Gh "GitHub.cli" "GitHub CLI"
 
-Write-Host "`n=== 1. Copiar projeto para pasta de deploy ===" -ForegroundColor Cyan
-if (Test-Path $DeployDir) { Remove-Item -Recurse -Force $DeployDir }
-New-Item -ItemType Directory -Path $DeployDir -Force | Out-Null
-robocopy $ProjectRoot $DeployDir /E /XD .git node_modules /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
-if ($LASTEXITCODE -ge 8) { throw "Erro ao copiar ficheiros (robocopy $LASTEXITCODE)" }
+Write-Host "`n=== 1. Preparar pasta do projeto ===" -ForegroundColor Cyan
+if ($DeployDir -ne $ProjectRoot) {
+    if (Test-Path $DeployDir) { Remove-Item -Recurse -Force $DeployDir }
+    New-Item -ItemType Directory -Path $DeployDir -Force | Out-Null
+    robocopy $ProjectRoot $DeployDir /E /XD .git node_modules /NFL /NDL /NJH /NJS /nc /ns /np | Out-Null
+    if ($LASTEXITCODE -ge 8) { throw "Erro ao copiar ficheiros (robocopy $LASTEXITCODE)" }
+}
 
 Set-Location $DeployDir
 if (Test-Path .git) { Remove-Item -Recurse -Force .git }

@@ -9,55 +9,110 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin>
 </head>
-<body>
+<body class="portal-page">
     <header class="header">
         <nav class="nav container">
             <a href="/" class="logo"><span class="logo-mark">Guia-me</span> Service</a>
-            <ul class="nav-links">
-                <li><a href="prototipo.html">Protótipo</a></li>
-                <li><a href="#apps">Apps</a></li>
-                <li><a href="/cliente/" class="btn-nav">App cliente</a></li>
-            </ul>
+            <div class="nav-end">
+                <ul class="nav-links">
+                    <li><a href="prototipo.html">Protótipo</a></li>
+                    <li><a href="#apps">Apps</a></li>
+                </ul>
+                <div class="nav-apps" id="apps">
+                    <a href="/cliente/" class="btn btn-secondary btn-nav-app">Abrir app Cliente</a>
+                    <a href="/prestador/" class="btn btn-secondary btn-nav-app">Abrir app Prestador</a>
+                    <a href="/admin/" class="btn btn-secondary btn-nav-app">ADM</a>
+                </div>
+            </div>
             <button type="button" class="menu-toggle" aria-label="Abrir menu">☰</button>
         </nav>
     </header>
 
     <main>
         <section class="hero container">
-            <p class="hero-badge">Dois apps, uma API</p>
-            <h1>O <em>iFood</em> e o <em>Uber</em> dos serviços no seu bairro</h1>
-            <p class="hero-lead">Dois aplicativos web — cliente e prestador — na mesma API Node. Local: <strong>http://localhost:3333</strong>. Para partilhar online (HTTPS grátis): <a href="DEPLOY-HOSPEDAGEM.md">DEPLOY-HOSPEDAGEM.md</a>.</p>
-            <section class="hero-actions" id="apps">
-                <a href="/cliente/" class="btn btn-primary">Abrir app Cliente</a>
-                <a href="/prestador/" class="btn btn-secondary">Abrir app Prestador</a>
-            </section>
-            <p class="hero-cad-links">Novo? <a href="/cliente/cadastro.html">Cadastro cliente</a> · <a href="/prestador/cadastro.html">Cadastro prestador</a> · <a href="/cliente/login.html">Entrar (cliente)</a> · <a href="/prestador/login.html">Entrar (prestador)</a></p>
-            <section class="choice-grid">
-                <a href="/cliente/" class="choice-card">
-                    <span class="choice-icon" aria-hidden="true">◎</span>
-                    <h2>App Cliente</h2>
-                    <p>Local, mapa, pedido, cobrança no aceite (km + US$ 5) e acompanhamento.</p>
-                    <span class="choice-cta">/cliente/ →</span>
-                </a>
-                <a href="/prestador/" class="choice-card choice-card--alt">
-                    <span class="choice-icon" aria-hidden="true">◉</span>
-                    <h2>App Prestador</h2>
-                    <p>Fila, aceite (cobrança do cliente), orçamento, fechamento (taxa US$ 10).</p>
-                    <span class="choice-cta">/prestador/ →</span>
-                </a>
-            </section>
-        </section>
+            <div class="hero-grid-cross" aria-label="Informações do Guia-me em quatro quadrantes">
+                <div class="hero-quadrant hero-quadrant--tl hero-marketing-highlight hero-marketing-highlight--copy">
+                    <p class="hero-marketing-badge">Por que escolher o Guia-me</p>
+                    <h1 class="hero-marketing-title">O <em>iFood</em> e o <em>Uber</em> dos serviços no seu bairro</h1>
+                    <div class="hero-pitch">
+                        <p class="hero-pitch__lead">
+                            O <strong>Guia-me</strong> aproxima quem precisa de um serviço e quem pode executá-lo no mesmo bairro — com a mesma objetividade dos apps que você já usa no dia a dia.
+                        </p>
+                        <div class="hero-pitch__benefits">
+                            <div class="hero-pitch__block hero-marketing-sub">
+                                <h3 class="hero-pitch__label">Para clientes</h3>
+                                <ul>
+                                    <li>Profissionais perto, filtrados por cidade, bairro e tipo de serviço</li>
+                                    <li>Pedido, mapa, orçamento e acompanhamento em um só lugar</li>
+                                    <li>Chat no app, histórico e indicações de quem já contratou</li>
+                                    <li>Menos exposição de contato pessoal: a conversa começa dentro da plataforma</li>
+                                </ul>
+                            </div>
+                            <div class="hero-pitch__block hero-marketing-sub">
+                                <h3 class="hero-pitch__label">Para prestadores</h3>
+                                <ul>
+                                    <li>Fila de pedidos na sua área e nas categorias que você atende</li>
+                                    <li>Aceite, proposta de valor e fechamento com regras claras</li>
+                                    <li>Mais visibilidade local e reputação construída no app</li>
+                                    <li>Cadastro com validação de identidade para aumentar confiança do cliente</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <section id="mvp" class="section container">
-            <h2 class="section-title">Estrutura do repositório</h2>
-            <ul class="feature-list">
-                <li><code>apps/cliente/</code> — fluxo do cliente (pedidos, mapa, menu conta).</li>
-                <li><code>apps/prestador/</code> — fluxo do prestador (fila, aceite, relatórios).</li>
-                <li><code>shared/</code> — CSS e JS comuns (cadastro, catálogo, drawer).</li>
-                <li><code>server/</code> — API + servir os três mounts acima.</li>
-            </ul>
-            <p class="muted small" style="margin-top: 1rem">URLs antigas (<code>cliente.html</code>, <code>prestador.html</code>, etc.) redirecionam automaticamente.</p>
+                <div class="hero-quadrant hero-quadrant--tr">
+                    <figure class="hero-visual hero-marketing-highlight hero-marketing-highlight--visual">
+                        <span class="hero-marketing-badge hero-visual__badge">Serviço na palma da mão</span>
+                        <img
+                            src="/shared/images/guia-me-hero-cliente-prestador.png"
+                            alt="Cliente pedindo serviço pelo celular e prestador uniformizado a caminho do atendimento"
+                            width="1200"
+                            height="675"
+                            loading="eager"
+                        >
+                    </figure>
+                </div>
+
+                <div class="hero-quadrant hero-quadrant--bl">
+                    <aside class="hero-map-demo hero-marketing-highlight hero-marketing-highlight--map" aria-label="Exemplo visual de mapa e distância entre cliente e prestador">
+                        <p class="hero-marketing-badge">Transparência na distância</p>
+                        <p class="hero-map-demo__eyebrow hero-marketing-subtitle">Mapa e km entre as partes</p>
+                        <div class="map-osm-wrap hero-map-demo__map-wrap">
+                            <div id="portal-mapa-demo" class="map-osm hero-map-demo__map" role="img" aria-label="Mapa com cliente, prestador e 12 km de distância"></div>
+                        </div>
+                        <ul class="hero-map-demo__stats" id="portal-mapa-stats"></ul>
+                    </aside>
+                </div>
+
+                <div class="hero-quadrant hero-quadrant--br">
+                    <div class="hero-below--security hero-marketing-highlight" role="region" aria-labelledby="hero-security-title">
+                        <div class="hero-pitch__block hero-pitch__block--security hero-security-panel">
+                            <p class="hero-marketing-badge">Confiança e proteção</p>
+                            <h3 id="hero-security-title" class="hero-marketing-title">Segurança do cadastro e dos seus dados</h3>
+                            <p class="hero-pitch__security-intro">
+                                Seus dados merecem o mesmo cuidado de um app financeiro: coletamos só o essencial, validamos sua identidade e protegemos cada etapa do pedido.
+                            </p>
+                            <ul>
+                                <li><strong>Cadastro verificado</strong> — celular confirmado por código (SMS) antes de concluir a conta</li>
+                                <li><strong>Senha protegida</strong> — armazenada com criptografia forte; nunca em texto aberto</li>
+                                <li><strong>Biometria facial</strong> — reverificação periódica de cliente e prestador para reduzir fraudes</li>
+                                <li><strong>Dados sob controle</strong> — perfil, documentos e histórico vinculados à sua sessão autenticada</li>
+                                <li><strong>Chat moderado</strong> — bloqueio de telefone, e-mail e links externos no primeiro contato</li>
+                                <li><strong>KYC para prestadores</strong> — caminho preparado para validação de identidade com parceiro especializado</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <section class="portal-reviews hero-marketing-highlight hero-marketing-highlight--reviews" aria-labelledby="portal-reviews-title">
+                        <p class="hero-marketing-badge">Reputação real</p>
+                        <h2 id="portal-reviews-title" class="portal-reviews__title hero-marketing-title">Comentários recentes</h2>
+                        <p class="portal-reviews__sub">Clientes sugerindo empresas e profissionais · role para ver mais</p>
+                        <div id="portal-reviews-list" class="portal-reviews__list portal-reviews__list--duo" role="region" aria-label="Lista de comentários com rolagem"></div>
+                    </section>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -66,5 +121,8 @@
     </footer>
 
     <script src="/shared/script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
+    <script src="/shared/portal-mapa-demo.js"></script>
+    <script src="/shared/portal-reviews.js"></script>
 </body>
 </html>

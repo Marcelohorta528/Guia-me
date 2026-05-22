@@ -1,5 +1,7 @@
 # Guia-me Service (MVP)
 
+**Pasta raiz do projeto:** `C:\Users\PC\Guia-me` (abra esta pasta no Cursor/terminal).
+
 Protótipo web com o mesmo **objetivo de produto** que iFood e Uber: o cliente encontra **rápido e perto** o que precisa — só que aqui o “cardápio” é **serviços diversos** (começando por exemplos como **eletricista**), filtrados por **cidade e bairro**. Prestadores cadastram **onde atendem** e **o que fazem** para aparecer na busca certa.
 
 ## Stack (atual)
@@ -16,7 +18,7 @@ Protótipo web com o mesmo **objetivo de produto** que iFood e Uber: o cliente e
 
 ## API local
 
-Na pasta `app-servico`:
+Na pasta raiz do projeto (`Guia-me`):
 
 ```powershell
 .\iniciar-com-api.ps1
@@ -63,7 +65,7 @@ Para **só HTML estático** (sem gravar conta): `.\servidor-local.ps1` (Python).
 
 - Ficheiros: abra `index.html`, ou
 - Python: `.\servidor-local.ps1` (porta 5510).
-- **API + pedidos (Node):** na pasta `app-servico`, `npm start` → `http://localhost:3333/` — roteiro passo a passo: **`TESTE-FLUXO-PEDIDO-API.md`**.
+- **API + pedidos (Node):** na pasta `Guia-me`, `npm start` → `http://localhost:3333/` — roteiro passo a passo: **`TESTE-FLUXO-PEDIDO-API.md`**.
 
 ## Escopo do MVP (fase 1)
 
@@ -175,7 +177,7 @@ Isto **não** implica integração técnica com o OLX; é o **modelo de UX** (ch
 ## Estrutura
 
 ```
-app-servico/
+Guia-me/
 ├── KYC-INTEGRACAO.md      # Guia para fechar fornecedor KYC no fim do projeto
 ├── server/
 │   ├── index.mjs

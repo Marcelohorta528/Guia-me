@@ -1,0 +1,9 @@
+Pasta raiz do Guia-me Service:
+
+  C:\Users\PC\Guia-me
+
+Iniciar API:
+  cd C:\Users\PC\Guia-me
+  npm start
+
+Portal: http://localhost:3333/

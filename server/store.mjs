@@ -636,6 +636,41 @@ export function listReviewsForTarget(targetAccountId, limit = 50) {
   });
 }
 
+function targetDisplayName(acc) {
+  if (!acc) return 'Profissional';
+  const p = acc.perfil || {};
+  return String(p.fantasia || p.nome || publicAuthorLabel(acc)).trim() || 'Profissional';
+}
+
+/** Comentários recentes no portal (clientes sugerindo prestadores). */
+export function listRecentPortalReviews(limit = 6) {
+  return runExclusive(async () => {
+    const store = await readStore();
+    if (!Array.isArray(store.reviews)) store.reviews = [];
+    const lim = Math.min(20, Math.max(1, Number(limit) || 6));
+    const sorted = [...store.reviews].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const items = [];
+    for (const r of sorted) {
+      if (items.length >= lim) break;
+      const author = store.accounts.find((a) => a.id === r.authorId);
+      const target = store.accounts.find((a) => a.id === r.targetId);
+      if (String(r.authorTipo) !== 'cliente' || String(target?.tipo) !== 'prestador') continue;
+      items.push({
+        id: r.id,
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.createdAt,
+        authorLabel: publicAuthorLabel(author),
+        sugestao: targetDisplayName(target),
+        servicos: Array.isArray(target?.perfil?.categorias)
+          ? target.perfil.categorias.slice(0, 2)
+          : [],
+      });
+    }
+    return { reviews: items };
+  });
+}
+
 export function listReviewsReceived(token, limit = 50) {
   return runExclusive(async () => {
     const store = await readStore();
@@ -1225,5 +1260,90 @@ export function listDocumentosFiscaisConta(token) {
     }
     docs.sort((a, b) => new Date(b.enviado_at) - new Date(a.enviado_at));
     return { documentos: docs };
+  });
+}
+
+function accountResumo(store, accountId) {
+  if (!accountId) return null;
+  const acc = store.accounts.find((a) => a.id === accountId);
+  if (!acc) return { id: accountId, nome: 'Conta removida', telefone: null, tipo: null };
+  const p = acc.perfil || {};
+  return {
+    id: acc.id,
+    tipo: acc.tipo,
+    nome: String(p.nome || p.fantasia || publicAuthorLabel(acc)).trim(),
+    telefone: acc.telefone || p.celular || null,
+    cidade: p.cidade || p.cidade_base || null,
+    bairro: p.bairro || (Array.isArray(p.bairros) ? p.bairros[0] : null),
+  };
+}
+
+function brl(n) {
+  if (n == null || !Number.isFinite(Number(n))) return null;
+  return Math.round(Number(n) * 100) / 100;
+}
+
+function mapPedidoTransacao(store, order) {
+  enrichPedidoStatusMeta(order);
+  const valorServico = order.orcamentoValor != null ? order.orcamentoValor : order.valor_servico;
+  const comissao =
+    order.orcamentoComissaoAppReais != null
+      ? order.orcamentoComissaoAppReais
+      : order.comissao_app_reais;
+  const liquido =
+    order.orcamentoLiquidoPrestador != null
+      ? order.orcamentoLiquidoPrestador
+      : order.valor_liquido_prestador_servico;
+  const desloc = brl(order.taxa_deslocamento_reais) || 0;
+  const taxaAceite = brl(order.taxa_aceite_total_reais) || 0;
+  const taxaFechamento = brl(order.taxa_prestador_fechamento_reais) || 0;
+  const totalCliente =
+    valorServico != null ? brl(Number(valorServico) + desloc + taxaAceite) : null;
+
+  return {
+    id: order.id,
+    status: order.status,
+    status_label: order.status_label,
+    createdAt: order.createdAt,
+    aceitoAt: order.aceitoAt,
+    concluidoAt: order.concluidoAt,
+    cidade: order.cidade,
+    bairro: order.bairro,
+    servicos: order.servicos || [],
+    descricao: String(order.descricao || '').slice(0, 120),
+    cliente: accountResumo(store, order.clienteId),
+    prestador: accountResumo(store, order.prestadorId),
+    valores: {
+      valor_servico: brl(order.valor_servico),
+      orcamento_valor: brl(order.orcamentoValor),
+      valor_efetivo_servico: brl(valorServico),
+      taxa_deslocamento_reais: desloc,
+      comissao_app_reais: brl(comissao),
+      liquido_prestador_servico: brl(liquido),
+      taxa_aceite_total_reais: taxaAceite,
+      taxa_aceite_cobrada_at: order.taxa_aceite_cobrada_at,
+      taxa_prestador_fechamento_reais: taxaFechamento,
+      taxa_prestador_fechamento_cobrada_at: order.taxa_prestador_fechamento_cobrada_at,
+      total_cliente_estimado: totalCliente,
+    },
+  };
+}
+
+/** Painel admin: todas as transações (pedidos) cliente ↔ prestador. */
+export function listTransacoesAdmin() {
+  return runExclusive(async () => {
+    const store = await readStore();
+    const sorted = isOrdersSqliteEnabled()
+      ? sqliteListAllOrders()
+      : [...(store.orders || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const transacoes = sorted.map((o) => mapPedidoTransacao(store, o));
+    const stats = {
+      total: transacoes.length,
+      novo: transacoes.filter((t) => t.status === 'novo').length,
+      aceito: transacoes.filter((t) => t.status === 'aceito').length,
+      concluido: transacoes.filter((t) => t.status === 'concluido').length,
+    };
+    return { stats, transacoes };
   });
 }
