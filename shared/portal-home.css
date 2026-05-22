@@ -1,0 +1,580 @@
+/**
+ * Portal Guia-me — grade bento (marketing / UX)
+ * TL: proposta · TR: ilustração 16:9 · BL: mapa · BR: cadastro + reviews
+ */
+.portal-hero {
+    padding-top: 48px;
+    padding-bottom: 40px;
+}
+
+.portal-bento {
+    /* Cruz (+) no centro: faixa vertical e horizontal simétricas */
+    --bento-center: 1.5cm;
+    --bento-col-left: minmax(0, 1fr);
+    --bento-col-right: minmax(0, 1.22fr);
+    display: grid;
+    grid-template-columns: var(--bento-col-left) var(--bento-center) var(--bento-col-right);
+    grid-template-rows: auto var(--bento-center) auto;
+    grid-template-areas:
+        "pitch . visual"
+        ".     . ."
+        "map   . trust";
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.portal-bento__cell {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.portal-bento__cell--pitch {
+    grid-area: pitch;
+    align-self: stretch;
+    min-height: 200px;
+}
+
+.portal-bento__cell--visual {
+    grid-area: visual;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+.portal-bento__cell--map {
+    grid-area: map;
+    width: 100%;
+    justify-self: stretch;
+    align-self: stretch;
+    aspect-ratio: 1 / 1;
+    max-height: none;
+}
+
+.portal-bento__cell--trust {
+    grid-area: trust;
+    width: 100%;
+    justify-self: stretch;
+    align-self: stretch;
+    aspect-ratio: 1 / 1;
+    max-height: none;
+}
+
+/* Cartão dourado (padrão marketing) */
+.portal-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(160deg, rgba(232, 197, 71, 0.12) 0%, rgba(15, 15, 15, 0.55) 42%, var(--color-bg-card) 100%);
+    box-shadow:
+        0 0 0 1px rgba(232, 197, 71, 0.35),
+        0 12px 36px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(232, 197, 71, 0.1);
+    overflow: hidden;
+}
+
+.portal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), var(--color-accent-hover), var(--color-accent), transparent);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.portal-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--color-accent), rgba(232, 197, 71, 0.15));
+    pointer-events: none;
+    z-index: 2;
+}
+
+.portal-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.portal-badge {
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 5px 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #1a1508;
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(232, 197, 71, 0.35);
+}
+
+.portal-badge--overlay {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 4;
+    margin: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+/* TL — texto com rolagem */
+.portal-card--pitch {
+    padding: 0;
+}
+
+.portal-card__scroll {
+    position: absolute;
+    inset: 12px 10px 12px 14px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) rgba(0, 0, 0, 0.35);
+}
+
+.portal-card__scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.portal-card__scroll::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 3px;
+}
+
+.portal-bento__title {
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text);
+    margin: 0 0 8px;
+}
+
+.portal-bento__title em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--color-accent);
+}
+
+.portal-bento__lead {
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin: 0 0 12px;
+}
+
+.portal-bento__lead strong {
+    color: var(--color-text);
+}
+
+.portal-bento__blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.portal-bento__sub {
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(232, 197, 71, 0.22);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.portal-bento__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin: 0 0 6px;
+}
+
+.portal-bento__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.portal-bento__list li {
+    position: relative;
+    padding-left: 12px;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    margin-bottom: 5px;
+}
+
+.portal-bento__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-accent);
+}
+
+.portal-bento__list li strong {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* TR — ilustração inteira */
+.portal-card--visual {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    margin: 0;
+}
+
+.portal-visual__media {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border-radius: calc(var(--radius-lg) - 4px);
+    overflow: hidden;
+    background: #080808;
+    line-height: 0;
+}
+
+.portal-visual__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+}
+
+/* BL — mapa em destaque + ícones alinhados à base do bloco Confiança (BR) */
+.portal-map-stack {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    gap: 0;
+}
+
+.portal-map-stack .portal-card--map {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-bottom: 0;
+    border-width: 3px;
+    box-shadow:
+        0 0 0 1px rgba(232, 197, 71, 0.5),
+        0 0 28px rgba(232, 197, 71, 0.18),
+        0 14px 40px rgba(0, 0, 0, 0.45);
+}
+
+.portal-card--map {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 10px 8px 12px;
+}
+
+.portal-card--map .portal-badge {
+    margin-bottom: 4px;
+}
+
+.portal-card--map .hero-map-demo__eyebrow {
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.portal-card--map .hero-map-demo__map-wrap {
+    flex: 1 1 auto;
+    min-height: 58%;
+    margin-top: 2px;
+    border: 2px solid var(--color-accent);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 0 1px rgba(232, 197, 71, 0.35),
+        0 8px 24px rgba(0, 0, 0, 0.5);
+    background: #0a0a0a;
+}
+
+.portal-card--map .hero-map-demo__map,
+.portal-card--map #portal-mapa-demo {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 140px !important;
+    flex: 1;
+    border-radius: 8px;
+}
+
+.portal-card--map .hero-map-demo__stats {
+    flex-shrink: 0;
+    margin-top: 4px;
+    margin-bottom: 0;
+    font-size: 0.72rem;
+    gap: 4px;
+}
+
+.portal-card--map .hero-map-demo__stats li {
+    padding: 4px 6px;
+}
+
+.portal-social {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.1rem;
+    flex: 0 0 auto;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: 0;
+    padding: 0.65rem 10px 0;
+    border-top: none;
+    z-index: 2;
+}
+
+.portal-bento__cell--trust .portal-card--stack {
+    height: 100%;
+}
+
+.portal-social__btn {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.45);
+    border: 2px solid rgba(232, 197, 71, 0.5);
+    border-radius: 50%;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+}
+
+.portal-social__icon {
+    display: block;
+    width: 22px;
+    height: 22px;
+}
+
+.portal-social__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.portal-social__btn--instagram {
+    color: #fff;
+    background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.portal-social__btn--facebook {
+    color: #fff;
+    background: #1877f2;
+    border-color: #1877f2;
+}
+
+.portal-social__btn--tiktok {
+    color: #fff;
+    background: #000;
+    border-color: #ee1d52;
+    box-shadow: inset 0 0 0 1px rgba(105, 201, 208, 0.6);
+}
+
+.portal-social__btn--instagram:hover {
+    filter: brightness(1.08);
+}
+
+.portal-social__btn--facebook:hover {
+    background: #0d65d9;
+}
+
+.portal-social__btn--tiktok:hover {
+    border-color: #69c9d0;
+    box-shadow: 0 0 0 2px rgba(238, 29, 82, 0.5);
+}
+
+.portal-social__btn--whatsapp {
+    color: #fff;
+    background: #25d366;
+    border-color: #25d366;
+}
+
+.portal-social__btn--whatsapp:hover {
+    background: #1ebe57;
+    border-color: #1ebe57;
+}
+
+.portal-social__btn--email {
+    color: #1a1508;
+    background: var(--color-accent);
+    border-color: var(--color-accent-hover);
+}
+
+.portal-social__btn--email:hover {
+    background: var(--color-accent-hover);
+    filter: brightness(1.05);
+}
+
+/* BR — cadastro + comentários */
+.portal-card--stack {
+    padding: 0;
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.portal-card__half {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(232, 197, 71, 0.15);
+}
+
+.portal-card__half:last-child {
+    border-bottom: none;
+}
+
+.portal-card__half--scroll {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) rgba(0, 0, 0, 0.35);
+}
+
+.portal-card__half-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    color: var(--color-text);
+}
+
+.portal-card__half-intro {
+    font-size: 0.74rem;
+    line-height: 1.45;
+    color: var(--color-text-muted);
+    margin: 0 0 8px;
+}
+
+.portal-card__half .portal-bento__list li {
+    font-size: 0.72rem;
+    margin-bottom: 4px;
+}
+
+.portal-card__half .portal-reviews__title {
+    font-size: 0.95rem;
+    margin: 0 0 4px;
+}
+
+.portal-card__half.portal-reviews {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.portal-card__half.portal-reviews .portal-badge,
+.portal-card__half.portal-reviews .portal-reviews__title,
+.portal-card__half.portal-reviews .portal-reviews__sub {
+    flex-shrink: 0;
+}
+
+.portal-card__half.portal-reviews .portal-reviews__sub strong {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.portal-reviews__scroll,
+.portal-card__half .portal-reviews__list--duo {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    --portal-review-row: 4.5rem;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) var(--color-bg-soft);
+    padding-right: 6px;
+    margin-top: 2px;
+}
+
+.portal-reviews__scroll::-webkit-scrollbar,
+.portal-card__half .portal-reviews__list--duo::-webkit-scrollbar {
+    width: 6px;
+}
+
+.portal-reviews__scroll::-webkit-scrollbar-track,
+.portal-card__half .portal-reviews__list--duo::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+}
+
+.portal-reviews__scroll::-webkit-scrollbar-thumb,
+.portal-card__half .portal-reviews__list--duo::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 3px;
+}
+
+.portal-reviews__scroll:focus-visible,
+.portal-card__half .portal-reviews__list--duo:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.portal-card__half .portal-reviews__list--duo .portal-review {
+    min-height: var(--portal-review-row);
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+@media (max-width: 860px) {
+    .portal-bento {
+        --bento-center: 1rem;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "visual"
+            "pitch"
+            "map"
+            "trust";
+        gap: var(--bento-center);
+        max-width: 100%;
+    }
+
+    .portal-bento__cell--visual {
+        aspect-ratio: 16 / 9;
+        max-height: none;
+    }
+
+    .portal-bento__cell--pitch {
+        min-height: 280px;
+    }
+
+    .portal-bento__cell--map,
+    .portal-bento__cell--trust {
+        aspect-ratio: 1 / 1;
+        max-width: none;
+        max-height: none;
+        justify-self: stretch;
+        width: 100%;
+    }
+}
