@@ -187,6 +187,51 @@ main {
     padding-bottom: 40px;
 }
 
+/* Banner visual — proporção da arte (16:9), imagem 100% visível */
+.hero-banner-template {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.hero-banner-template__frame.hero-marketing-highlight--visual {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    margin: 0;
+    border-width: 2px;
+    overflow: hidden;
+}
+
+.hero-banner-template__badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    z-index: 3;
+    margin: 0;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.hero-banner-template__media {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    border-radius: calc(var(--radius-lg) - 4px);
+    overflow: hidden;
+    background: #0a0a0a;
+    line-height: 0;
+}
+
+.hero-banner-template__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+}
+
 .hero-badge {
     display: inline-block;
     font-size: 0.8rem;
@@ -196,50 +241,168 @@ main {
     margin-bottom: 16px;
 }
 
-/* Grade em cruz: 4 quadrantes com espaço simétrico (+) no centro */
+/* Grade bento 2×2 — destaque visual à direita; imagem em 16:9 (não quadrada) */
 .hero-grid-cross {
+    --hero-grid-gap: 1.15rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.22fr);
     grid-template-rows: auto auto;
-    gap: 1.5cm;
-    align-items: stretch;
-    position: relative;
+    gap: var(--hero-grid-gap);
     width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    align-items: stretch;
 }
 
 .hero-quadrant {
+    position: relative;
+    width: 100%;
     min-width: 0;
     min-height: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Linha superior: texto acompanha altura da imagem */
+.hero-quadrant--tl {
+    aspect-ratio: unset;
+    align-self: stretch;
+    min-height: 240px;
+}
+
+.hero-quadrant--visual.hero-quadrant--tr {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    align-self: stretch;
+}
+
+/* Linha inferior: quadrados equilibrados (mapa + confiança) */
+.hero-quadrant--bl,
+.hero-quadrant--br {
+    aspect-ratio: 1 / 1;
+    max-height: min(340px, 42vw);
+    justify-self: stretch;
+}
+
+.hero-quadrant__fill {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.hero-quadrant__fill--br {
+    gap: 0.5rem;
+}
+
+.hero-quadrant__fill--br > .hero-below--security,
+.hero-quadrant__fill--br > .portal-reviews {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.hero-quadrant--br .hero-below--security.hero-marketing-highlight {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+}
+
+.hero-quadrant--br .hero-security-panel {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) rgba(0, 0, 0, 0.35);
+}
+
+.hero-quadrant--br .hero-marketing-title {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    max-width: none;
+}
+
+.hero-quadrant--br .hero-pitch__security-intro,
+.hero-quadrant--br .hero-pitch__block--security li {
+    font-size: 0.75rem;
+}
+
+.hero-quadrant--tl {
+    grid-column: 1;
+    grid-row: 1;
 }
 
 .hero-quadrant--tr {
-    justify-content: stretch;
+    grid-column: 2;
+    grid-row: 1;
 }
 
-.hero-quadrant--tr .hero-visual.hero-marketing-highlight--visual {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
-}
-
-.hero-quadrant--tr .hero-visual img {
-    width: 100%;
-    height: auto;
-    flex: 1;
-    object-fit: cover;
+.hero-quadrant--bl {
+    grid-column: 1;
+    grid-row: 2;
 }
 
 .hero-quadrant--br {
-    gap: 1.5cm;
+    grid-column: 2;
+    grid-row: 2;
 }
 
-.hero-quadrant--bl .hero-map-demo,
-.hero-quadrant--br .hero-below--security,
-.hero-quadrant--br .portal-reviews {
-    flex: 1;
+.hero-quadrant--tl.hero-marketing-highlight--copy {
+    padding: 0;
+}
+
+.hero-copy-scroll {
+    position: absolute;
+    inset: 12px 10px 12px 14px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) rgba(0, 0, 0, 0.35);
+}
+
+.hero-copy-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.hero-copy-scroll::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 3px;
+}
+
+.hero-quadrant--tl .hero-marketing-title {
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+    max-width: none;
+    margin-bottom: 8px;
+}
+
+.hero-quadrant--tl .hero-pitch__lead {
+    font-size: 0.82rem;
+    max-width: none;
+    margin-bottom: 10px;
+}
+
+.hero-quadrant--tl .hero-pitch__benefits {
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.hero-quadrant--tl .hero-marketing-sub {
+    padding: 8px 10px;
+}
+
+.hero-quadrant--tl .hero-pitch__block li {
+    font-size: 0.78rem;
+    margin-bottom: 4px;
+}
+
+.hero-quadrant--bl .hero-map-demo {
+    position: absolute;
+    inset: 0;
+    height: 100%;
     min-height: 0;
 }
 
@@ -381,10 +544,13 @@ main {
     margin: 0;
 }
 
-.hero-marketing-highlight--visual img {
+.hero-marketing-highlight--visual:not(.hero-banner-template__frame) img {
     display: block;
     width: 100%;
     height: auto;
+    aspect-ratio: 1200 / 675;
+    object-fit: contain;
+    object-position: center center;
     vertical-align: top;
     border-radius: calc(var(--radius-lg) - 4px);
     border: 2px solid rgba(232, 197, 71, 0.55);
@@ -394,10 +560,11 @@ main {
 .hero-marketing-highlight--map,
 .hero-marketing-highlight--reviews {
     border-radius: var(--radius-lg);
-    padding: 14px 16px 14px 20px;
+    padding: 10px 12px 10px 14px;
     display: flex;
     flex-direction: column;
-    min-height: 300px;
+    height: 100%;
+    min-height: 0;
 }
 
 .hero-marketing-subtitle {
@@ -544,7 +711,9 @@ main {
     border-radius: 0;
     padding: 4px 2px 8px 4px;
     margin: 0;
-    max-height: 360px;
+    flex: 1;
+    min-height: 0;
+    max-height: none;
     overflow-y: auto;
     background: transparent;
 }
@@ -560,13 +729,13 @@ main {
 
 .hero-quadrant--bl .hero-marketing-highlight--map,
 .hero-quadrant--br .hero-marketing-highlight--reviews {
-    min-height: 280px;
+    min-height: 0;
     height: 100%;
 }
 
-.hero-quadrant--br .hero-below--security.hero-marketing-highlight {
-    flex: 1.2;
-    min-height: 200px;
+.hero-quadrant--visual.hero-banner-template {
+    margin: 0;
+    padding: 0;
 }
 
 .hero-quadrant--br .portal-reviews {
@@ -576,7 +745,19 @@ main {
 }
 
 /* Mostra ~2 comentários por vez com barra de rolagem */
-.hero-quadrant--br .portal-reviews__list--duo,
+.hero-quadrant--br .portal-reviews__list--duo {
+    --portal-review-row: 4.5rem;
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent) var(--color-bg-soft);
+    padding-right: 6px;
+}
+
 .hero-below--full .portal-reviews__list--duo {
     --portal-review-row: 7.25rem;
     max-height: calc(2 * var(--portal-review-row) + 0.5rem);
@@ -628,7 +809,7 @@ main {
     display: flex;
     flex-direction: column;
     margin: 6px 0 0;
-    min-height: 220px;
+    min-height: 0;
 }
 
 .hero-map-demo__map-wrap .map-osm {
@@ -638,17 +819,27 @@ main {
 .hero-map-demo__map {
     flex: 1;
     width: 100%;
-    min-height: 220px;
-    height: 220px;
+    min-height: 0;
+    height: 100%;
 }
 
-.hero-quadrant--bl .hero-map-demo__map-wrap,
+.hero-quadrant--bl .hero-map-demo__map-wrap {
+    flex: 1;
+    min-height: 0;
+    margin: 4px 0 0;
+}
+
+.hero-quadrant--bl .hero-map-demo__map,
+.hero-quadrant--bl #portal-mapa-demo {
+    flex: 1;
+    min-height: 0 !important;
+    height: 100% !important;
+}
+
 .hero-below--full .hero-map-demo__map-wrap {
     min-height: 240px;
 }
 
-.hero-quadrant--bl .hero-map-demo__map,
-.hero-quadrant--bl #portal-mapa-demo,
 .hero-below--full .hero-map-demo__map,
 .hero-below--full #portal-mapa-demo {
     min-height: 240px !important;
@@ -826,11 +1017,35 @@ main {
 @media (max-width: 860px) {
     .hero-grid-cross {
         grid-template-columns: 1fr;
-        gap: 1.25rem;
+        grid-template-rows: auto;
+        max-width: 100%;
     }
 
+    .hero-quadrant--visual.hero-quadrant--tr {
+        order: -1;
+        aspect-ratio: 16 / 9;
+        max-height: none;
+    }
+
+    .hero-quadrant--tl {
+        min-height: 260px;
+        aspect-ratio: unset;
+    }
+
+    .hero-quadrant--bl,
     .hero-quadrant--br {
-        gap: 1.25rem;
+        aspect-ratio: 1 / 1;
+        max-width: min(360px, 100%);
+        max-height: none;
+        justify-self: center;
+    }
+
+    .hero-quadrant--tl,
+    .hero-quadrant--tr,
+    .hero-quadrant--bl,
+    .hero-quadrant--br {
+        grid-column: 1;
+        grid-row: auto;
     }
 
     .hero-top {

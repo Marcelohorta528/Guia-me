@@ -32,49 +32,53 @@
 
     <main>
         <section class="hero container">
-            <div class="hero-grid-cross" aria-label="Informações do Guia-me em quatro quadrantes">
+            <div class="hero-grid-cross" aria-label="Conteúdo principal do Guia-me em quadrantes">
                 <div class="hero-quadrant hero-quadrant--tl hero-marketing-highlight hero-marketing-highlight--copy">
-                    <p class="hero-marketing-badge">Por que escolher o Guia-me</p>
-                    <h1 class="hero-marketing-title">O <em>iFood</em> e o <em>Uber</em> dos serviços no seu bairro</h1>
-                    <div class="hero-pitch">
-                        <p class="hero-pitch__lead">
-                            O <strong>Guia-me</strong> aproxima quem precisa de um serviço e quem pode executá-lo no mesmo bairro — com a mesma objetividade dos apps que você já usa no dia a dia.
-                        </p>
-                        <div class="hero-pitch__benefits">
-                            <div class="hero-pitch__block hero-marketing-sub">
-                                <h3 class="hero-pitch__label">Para clientes</h3>
-                                <ul>
-                                    <li>Profissionais perto, filtrados por cidade, bairro e tipo de serviço</li>
-                                    <li>Pedido, mapa, orçamento e acompanhamento em um só lugar</li>
-                                    <li>Chat no app, histórico e indicações de quem já contratou</li>
-                                    <li>Menos exposição de contato pessoal: a conversa começa dentro da plataforma</li>
-                                </ul>
-                            </div>
-                            <div class="hero-pitch__block hero-marketing-sub">
-                                <h3 class="hero-pitch__label">Para prestadores</h3>
-                                <ul>
-                                    <li>Fila de pedidos na sua área e nas categorias que você atende</li>
-                                    <li>Aceite, proposta de valor e fechamento com regras claras</li>
-                                    <li>Mais visibilidade local e reputação construída no app</li>
-                                    <li>Cadastro com validação de identidade para aumentar confiança do cliente</li>
-                                </ul>
+                    <div class="hero-copy-scroll" tabindex="0" aria-label="Por que escolher o Guia-me — role para ler mais">
+                        <p class="hero-marketing-badge">Por que escolher o Guia-me</p>
+                        <h1 class="hero-marketing-title">O <em>iFood</em> e o <em>Uber</em> dos serviços no seu bairro</h1>
+                        <div class="hero-pitch">
+                            <p class="hero-pitch__lead">
+                                O <strong>Guia-me</strong> aproxima quem precisa de um serviço e quem pode executá-lo no mesmo bairro — com a mesma objetividade dos apps que você já usa no dia a dia.
+                            </p>
+                            <div class="hero-pitch__benefits">
+                                <div class="hero-pitch__block hero-marketing-sub">
+                                    <h3 class="hero-pitch__label">Para clientes</h3>
+                                    <ul>
+                                        <li>Profissionais perto, filtrados por cidade, bairro e tipo de serviço</li>
+                                        <li>Pedido, mapa, orçamento e acompanhamento em um só lugar</li>
+                                        <li>Chat no app, histórico e indicações de quem já contratou</li>
+                                        <li>Menos exposição de contato pessoal: a conversa começa dentro da plataforma</li>
+                                    </ul>
+                                </div>
+                                <div class="hero-pitch__block hero-marketing-sub">
+                                    <h3 class="hero-pitch__label">Para prestadores</h3>
+                                    <ul>
+                                        <li>Fila de pedidos na sua área e nas categorias que você atende</li>
+                                        <li>Aceite, proposta de valor e fechamento com regras claras</li>
+                                        <li>Mais visibilidade local e reputação construída no app</li>
+                                        <li>Cadastro com validação de identidade para aumentar confiança do cliente</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="hero-quadrant hero-quadrant--tr">
-                    <figure class="hero-visual hero-marketing-highlight hero-marketing-highlight--visual">
-                        <span class="hero-marketing-badge hero-visual__badge">Serviço na palma da mão</span>
-                        <img
-                            src="/shared/images/guia-me-hero-cliente-prestador.png"
-                            alt="Cliente pedindo serviço pelo celular e prestador uniformizado a caminho do atendimento"
-                            width="1200"
-                            height="675"
-                            loading="eager"
-                        >
-                    </figure>
-                </div>
+                <figure class="hero-quadrant hero-quadrant--tr hero-quadrant--visual hero-banner-template" aria-label="Cliente e prestador conectados pelo Guia-me">
+                    <div class="hero-banner-template__frame hero-marketing-highlight hero-marketing-highlight--visual">
+                        <span class="hero-marketing-badge hero-banner-template__badge">Serviço na palma da mão</span>
+                        <div class="hero-banner-template__media">
+                            <img
+                                src="/shared/images/guia-me-hero-cliente-prestador.png"
+                                alt="Cliente pedindo serviço pelo celular e prestador uniformizado a caminho do atendimento"
+                                width="1200"
+                                height="675"
+                                loading="eager"
+                            >
+                        </div>
+                    </div>
+                </figure>
 
                 <div class="hero-quadrant hero-quadrant--bl">
                     <aside class="hero-map-demo hero-marketing-highlight hero-marketing-highlight--map" aria-label="Exemplo visual de mapa e distância entre cliente e prestador">
@@ -88,6 +92,7 @@
                 </div>
 
                 <div class="hero-quadrant hero-quadrant--br">
+                    <div class="hero-quadrant__fill hero-quadrant__fill--br">
                     <div class="hero-below--security hero-marketing-highlight" role="region" aria-labelledby="hero-security-title">
                         <div class="hero-pitch__block hero-pitch__block--security hero-security-panel">
                             <p class="hero-marketing-badge">Confiança e proteção</p>
@@ -111,6 +116,7 @@
                         <p class="portal-reviews__sub">Clientes sugerindo empresas e profissionais · role para ver mais</p>
                         <div id="portal-reviews-list" class="portal-reviews__list portal-reviews__list--duo" role="region" aria-label="Lista de comentários com rolagem"></div>
                     </section>
+                    </div>
                 </div>
             </div>
         </section>
