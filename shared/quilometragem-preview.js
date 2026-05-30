@@ -2,7 +2,8 @@
  * Pré-visualização de km (ida) e taxa ida+volta (R$ 2,00/km por omissão).
  */
 (function (g) {
-  const TAXA_KM = 2;
+  const TAXA_KM = 1.5;
+  const TAXA_PLATAFORMA = 9.9;
 
   /**
    * @param {object} opts
@@ -34,7 +35,7 @@
       const kmIda = Math.min(maxKm, Math.max(0, k));
       const kmFaturados = kmIda * 2;
       const taxa = Math.round(kmFaturados * TAXA_KM * 100) / 100;
-      preview.textContent = `Km ida${ctx}: ${kmIda} → ida e volta: ${kmFaturados} km faturados × R$ ${TAXA_KM.toFixed(2).replace('.', ',')}/km ≈ R$ ${taxa.toFixed(2).replace('.', ',')} de deslocamento (soma-se US$ 5 plataforma no aceite — ver prévia abaixo).`;
+      preview.textContent = `Km ida${ctx}: ${kmIda} → ida e volta: ${kmFaturados} km faturados × R$ ${TAXA_KM.toFixed(2).replace('.', ',')}/km ≈ R$ ${taxa.toFixed(2).replace('.', ',')} de deslocamento (repasse ao prestador; soma-se taxa plataforma R$ ${TAXA_PLATAFORMA.toFixed(2).replace('.', ',')} paga pelo cliente — ver prévia abaixo).`;
     }
 
     input.addEventListener('input', refresh);

@@ -1,9 +1,60 @@
 /** Política de preços documentada no README (pagamentos). Km no pedido = ida; taxa = ida e volta × R$/km. */
 
-export const TAXA_DESLOCAMENTO_POR_KM = 2;
+export const TAXA_DESLOCAMENTO_POR_KM = 1.5;
+/** Valor fixo que o cliente paga à plataforma no aceite do prestador. */
+export const TAXA_PLATAFORMA_CLIENTE_REAIS = 9.9;
+/** @deprecated Use {@link TAXA_PLATAFORMA_CLIENTE_REAIS}. */
+export const CREDITO_CLIENTE_ACEITE_REAIS = TAXA_PLATAFORMA_CLIENTE_REAIS;
 export const COMISSAO_APP_PERCENT = 15;
 export const VALOR_MIN_SERVICO_APP = 100;
 export const KM_DESLOCAMENTO_MAX = 150;
+
+/** Prestador compra visibilidade na busca por período do dia. */
+export const PRESTADOR_VISIBILIDADE_POR_PERIODO_REAIS = 85;
+export const PRESTADOR_VISIBILIDADE_DIARIA_REAIS = 250;
+
+export const PERIODOS_VISIBILIDADE = ['manha', 'tarde', 'noite'];
+
+export const PERIODOS_VISIBILIDADE_LABELS = {
+  manha: 'Manhã',
+  tarde: 'Tarde',
+  noite: 'Noite',
+};
+
+/**
+ * Cotação da visibilidade do prestador (compra por período ou diária).
+ * @param {{ periodos?: string[], diaria?: boolean }} opts
+ */
+export function computePrestadorVisibilidade(opts = {}) {
+  const diaria = Boolean(opts.diaria);
+  const precoPeriodo = PRESTADOR_VISIBILIDADE_POR_PERIODO_REAIS;
+  const precoDiaria = PRESTADOR_VISIBILIDADE_DIARIA_REAIS;
+
+  if (diaria) {
+    return {
+      modo: 'diaria',
+      periodos: [...PERIODOS_VISIBILIDADE],
+      preco_por_periodo_reais: precoPeriodo,
+      preco_diaria_reais: precoDiaria,
+      total_reais: precoDiaria,
+      descricao: 'Diária completa (manhã + tarde + noite)',
+    };
+  }
+
+  const raw = Array.isArray(opts.periodos) ? opts.periodos : [];
+  const unique = [...new Set(raw.filter((p) => PERIODOS_VISIBILIDADE.includes(String(p))))];
+  const total = Math.round(unique.length * precoPeriodo * 100) / 100;
+  const labels = unique.map((p) => PERIODOS_VISIBILIDADE_LABELS[p] || p);
+
+  return {
+    modo: unique.length ? 'periodos' : 'vazio',
+    periodos: unique,
+    preco_por_periodo_reais: precoPeriodo,
+    preco_diaria_reais: precoDiaria,
+    total_reais: total,
+    descricao: labels.length ? labels.join(' + ') : 'Selecione ao menos um período ou a diária',
+  };
+}
 
 /**
  * km = distância estimada **só ida** (base do prestador → local do serviço).

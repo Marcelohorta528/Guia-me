@@ -23,6 +23,7 @@ import {
   postPedidoMensagem,
   getTaxaAceiteCotacao,
   getTaxaPrestadorFechamentoCotacao,
+  getPrestadorVisibilidadeCotacao,
   uploadPedidoDocumentoFiscal,
   getPedidoDocumentoFiscal,
   listDocumentosFiscaisConta,
@@ -331,6 +332,15 @@ export function registerApiRoutes(router) {
   router.get('/api/taxa-prestador-fechamento/cotacao', async ({ res }) => {
     try {
       const cotacao = await getTaxaPrestadorFechamentoCotacao();
+      json(res, 200, { ok: true, ...cotacao });
+    } catch (e) {
+      json(res, 500, { ok: false, error: String(e?.message || e) });
+    }
+  });
+
+  router.get('/api/prestador-visibilidade/cotacao', async ({ res, url }) => {
+    try {
+      const cotacao = getPrestadorVisibilidadeCotacao(url.searchParams);
       json(res, 200, { ok: true, ...cotacao });
     } catch (e) {
       json(res, 500, { ok: false, error: String(e?.message || e) });

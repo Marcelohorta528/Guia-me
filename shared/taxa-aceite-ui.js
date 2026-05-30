@@ -1,7 +1,9 @@
 /**
- * UI da cobrança no aceite: deslocamento R$ 2/km (ida e volta) + US$ 5 plataforma.
+ * UI da cobrança no aceite: deslocamento R$ 1,50/km (ida e volta) + taxa plataforma R$ 9,90.
  */
 (function (g) {
+  const TAXA_KM = 1.5;
+  const TAXA_PLATAFORMA = 9.9;
   function fmtBRL(n) {
     if (n == null || n === '' || !Number.isFinite(Number(n))) return null;
     return 'R$ ' + Number(n).toFixed(2).replace('.', ',');
@@ -37,15 +39,19 @@
         : kmIda != null
           ? Math.round(kmIda * 2 * 100) / 100
           : null;
+    const credito =
+      p.taxa_aceite_credito_reais != null
+        ? Number(p.taxa_aceite_credito_reais)
+        : plataforma;
     const usd =
       p.taxa_aceite_usd != null && Number.isFinite(Number(p.taxa_aceite_usd))
         ? Number(p.taxa_aceite_usd).toFixed(2)
-        : '5.00';
+        : null;
     const cambio =
       p.taxa_aceite_cambio_usd_brl != null && Number.isFinite(Number(p.taxa_aceite_cambio_usd_brl))
         ? Number(p.taxa_aceite_cambio_usd_brl).toFixed(4)
         : '—';
-    return { desloc, plataforma, total, kmIda, kmFat, usd, cambio };
+    return { desloc, plataforma, credito, total, kmIda, kmFat, usd, cambio };
   }
 
   function textoResumoCobrancaAceite(p) {
@@ -57,16 +63,23 @@
           x.kmIda +
           ' km ida → ' +
           x.kmFat +
-          ' km ida e volta × R$ 2,00/km = ' +
+          ' km ida e volta × R$ ' +
+          TAXA_KM.toFixed(2).replace('.', ',') +
+          '/km = ' +
           fmtBRL(x.desloc),
       );
     } else if (x.desloc != null) {
       parts.push('Deslocamento (ida e volta): ' + fmtBRL(x.desloc));
     }
-    if (x.plataforma != null) {
+    if (x.credito != null || x.plataforma != null) {
+      const taxa = x.credito != null ? x.credito : x.plataforma;
+      parts.push('Taxa plataforma (cliente paga): ' + fmtBRL(taxa));
+    } else if (x.plataforma != null && x.usd) {
       parts.push(
         'Taxa plataforma: US$ ' + x.usd + ' × ' + x.cambio + ' = ' + fmtBRL(x.plataforma) + ' (arred. p/ cima)',
       );
+    } else if (x.plataforma != null) {
+      parts.push('Taxa plataforma (cliente paga): ' + fmtBRL(x.plataforma));
     } else if (x.total != null && x.desloc == null) {
       parts.push('Taxa plataforma (legado): ' + fmtBRL(x.total));
     }
@@ -107,7 +120,9 @@
           x.kmIda +
           ' km (só ida) → ' +
           x.kmFat +
-          ' km ida e volta × R$ 2,00/km = ' +
+          ' km ida e volta × R$ ' +
+          TAXA_KM.toFixed(2).replace('.', ',') +
+          '/km = ' +
           (fmtBRL(x.desloc) || '—');
       } else {
         t += fmtBRL(x.desloc) || '—';
@@ -118,7 +133,9 @@
 
     const pp = document.createElement('p');
     pp.className = 'muted small';
-    if (x.plataforma != null) {
+    if (x.credito != null) {
+      pp.textContent = '2) Taxa plataforma (cliente paga): ' + (fmtBRL(x.credito) || '—');
+    } else if (x.plataforma != null && x.usd) {
       pp.textContent =
         '2) Taxa plataforma: US$ ' +
         x.usd +
@@ -127,11 +144,18 @@
         ' USD/BRL = ' +
         (fmtBRL(x.plataforma) || '—') +
         ' (arredondado para cima)';
+    } else if (x.plataforma != null) {
+      pp.textContent = '2) Taxa plataforma (cliente paga): ' + (fmtBRL(x.plataforma) || '—');
     } else {
       pp.textContent =
-        '2) Taxa plataforma: US$ ' + x.usd + ' (valor legado sem discriminação de deslocamento)';
+        '2) Taxa plataforma (cliente paga): R$ ' + TAXA_PLATAFORMA.toFixed(2).replace('.', ',');
     }
     box.appendChild(pp);
+
+    const pPrest = document.createElement('p');
+    pPrest.className = 'muted small';
+    pPrest.textContent = '3) Prestador recebe a diária acordada + deslocamento (repasse integral dos km).';
+    box.appendChild(pPrest);
 
     const pt = document.createElement('p');
     pt.className = 'muted small';

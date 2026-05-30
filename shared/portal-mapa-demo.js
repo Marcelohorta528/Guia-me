@@ -3,7 +3,8 @@
  */
 (function () {
   const KM_IDA = 12;
-  const TAXA_KM = 2;
+  const TAXA_KM = 1.5;
+  const TAXA_PLATAFORMA = 9.9;
   const cliente = [-22.9711, -43.1822];
   const prestador = [-22.9545, -43.172];
 
@@ -40,11 +41,19 @@
     if (mapInstance) mapInstance.invalidateSize();
   }
 
-  function init() {
+  function hasVisibleSize(el) {
+    return el.offsetWidth > 40 && el.offsetHeight > 40;
+  }
+
+  function init(retry = 0) {
     const el = document.getElementById('portal-mapa-demo');
     if (!el || typeof L === 'undefined') return;
     if (mapInstance) {
       refreshMapSize();
+      return;
+    }
+    if (!hasVisibleSize(el)) {
+      if (retry < 40) setTimeout(() => init(retry + 1), 100);
       return;
     }
 
@@ -79,6 +88,7 @@
     const mid = [(cliente[0] + prestador[0]) / 2, (cliente[1] + prestador[1]) / 2];
     const kmFaturados = KM_IDA * 2;
     const taxa = kmFaturados * TAXA_KM;
+    const totalAceite = Math.round((taxa + TAXA_PLATAFORMA) * 100) / 100;
 
     L.marker(mid, {
       icon: L.divIcon({
@@ -99,17 +109,28 @@
         <li><span class="hero-map-demo__stat-label">Km só ida</span><strong>${KM_IDA} km</strong></li>
         <li><span class="hero-map-demo__stat-label">Ida + volta</span><strong>${kmFaturados} km</strong></li>
         <li><span class="hero-map-demo__stat-label">Deslocamento</span><strong>R$ ${taxa.toFixed(2).replace('.', ',')}</strong></li>
+        <li><span class="hero-map-demo__stat-label">Taxa plataforma</span><strong>R$ ${TAXA_PLATAFORMA.toFixed(2).replace('.', ',')}</strong></li>
+        <li><span class="hero-map-demo__stat-label">Total no aceite</span><strong>R$ ${totalAceite.toFixed(2).replace('.', ',')}</strong></li>
+        <li><span class="hero-map-demo__stat-label">Prestador recebe</span><strong>diária + desloc.</strong></li>
       `;
     }
 
     requestAnimationFrame(refreshMapSize);
     setTimeout(refreshMapSize, 150);
     setTimeout(refreshMapSize, 500);
+    setTimeout(refreshMapSize, 1200);
     window.addEventListener('resize', refreshMapSize);
+    window.addEventListener('load', refreshMapSize);
 
     if (typeof ResizeObserver !== 'undefined') {
       const ro = new ResizeObserver(() => refreshMapSize());
       ro.observe(el);
+      const wrap = el.closest('.hero-map-demo__map-wrap');
+      if (wrap) ro.observe(wrap);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refreshMapSize).catch(() => {});
     }
   }
 

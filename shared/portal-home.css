@@ -299,8 +299,11 @@
 }
 
 .portal-card--map .hero-map-demo__map-wrap {
+    position: relative;
     flex: 1 1 auto;
-    min-height: 58%;
+    width: 100%;
+    min-height: 200px;
+    height: clamp(200px, 42vh, 280px);
     margin-top: 2px;
     border: 2px solid var(--color-accent);
     border-radius: 10px;
@@ -313,19 +316,29 @@
 
 .portal-card--map .hero-map-demo__map,
 .portal-card--map #portal-mapa-demo {
+    position: absolute;
+    inset: 0;
     width: 100% !important;
     height: 100% !important;
-    min-height: 140px !important;
-    flex: 1;
+    min-height: 200px !important;
     border-radius: 8px;
+    z-index: 1;
+}
+
+.portal-card--map .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 200px;
+    background: #1a1a1a;
 }
 
 .portal-card--map .hero-map-demo__stats {
     flex-shrink: 0;
     margin-top: 4px;
     margin-bottom: 0;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     gap: 4px;
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .portal-card--map .hero-map-demo__stats li {

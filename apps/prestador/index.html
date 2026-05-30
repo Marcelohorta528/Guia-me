@@ -49,6 +49,7 @@
                     <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-cnpj"><span class="app-drawer__icon" aria-hidden="true">🏢</span> CNPJ e empresa</a></li>
                     <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-logomarca"><span class="app-drawer__icon" aria-hidden="true">🏷️</span> Logomarca</a></li>
                     <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-foto-responsavel"><span class="app-drawer__icon" aria-hidden="true">📷</span> Foto do responsável</a></li>
+                    <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-visibilidade"><span class="app-drawer__icon" aria-hidden="true">📅</span> Visibilidade por período</a></li>
                     <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-mapa-km"><span class="app-drawer__icon" aria-hidden="true">🗺️</span> Mapa e quilometragem</a></li>
                     <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-fila-pedidos"><span class="app-drawer__icon" aria-hidden="true">📋</span> Fila de espera</a></li>
                     <li class="app-drawer__item"><a class="app-drawer__link" href="#prestador-sec-area"><span class="app-drawer__icon" aria-hidden="true">📍</span> Área e serviços</a></li>
@@ -84,7 +85,8 @@
                 </article>
                 <article class="app-account-card" id="prestador-sec-pagamentos">
                     <h3>Pagamentos e repasses</h3>
-                    <p class="muted small"><strong>Cliente (no aceite):</strong> deslocamento <strong>R$ 2,00/km ida e volta</strong> + <strong>US$ 5</strong> plataforma em real (total discriminado). <strong>Você (ao concluir):</strong> taxa de <strong>US$ 10,00</strong> em real no saldo ou cartão. Ver <a href="README.md">README</a>.</p>
+                    <p class="muted small"><strong>Visibilidade:</strong> compre <strong>manhã</strong>, <strong>tarde</strong> ou <strong>noite</strong> por <strong>R$ 85</strong> cada, ou a <strong>diária completa por R$ 250</strong> — secção <a href="#prestador-sec-visibilidade">Visibilidade por período</a>.</p>
+                    <p class="muted small"><strong>Cliente (no aceite):</strong> paga deslocamento <strong>R$ 1,50/km ida e volta</strong> + <strong>taxa plataforma R$ 9,90</strong>. <strong>Você recebe:</strong> <strong>diária</strong> acordada + deslocamento integral. Ao concluir: taxa de <strong>US$ 10,00</strong> em real no saldo ou cartão. Ver <a href="README.md">README</a>.</p>
                     <p class="muted small" id="prestador-pagamentos-cotacao" aria-live="polite">Cotação da taxa de fechamento: a carregar…</p>
                     <p class="muted small" id="prestador-pagamentos-saldo" aria-live="polite"></p>
                 </article>
@@ -140,7 +142,7 @@
 
         <section class="panel" id="prestador-sec-mapa-km">
             <h2>Mapa e quilometragem</h2>
-            <p class="muted small panel-note">Defina o <strong>ponto de partida</strong> (base) no mapa. Ícones no mapa = outros prestadores na região (<strong>só visual</strong>, sem endereço). <strong>Km máximo só ida</strong> que aceita deslocar; taxa <strong>R$&nbsp;2,00/km</strong> (ida e volta).</p>
+            <p class="muted small panel-note">Defina o <strong>ponto de partida</strong> (base) no mapa. Ícones no mapa = outros prestadores na região (<strong>só visual</strong>, sem endereço). <strong>Km máximo só ida</strong> que aceita deslocar; taxa <strong>R$&nbsp;1,50/km</strong> (ida e volta, repasse integral a você).</p>
             <div class="form-row-2">
                 <label class="stack-label">Cidade base
                     <select id="cidade-prestador" name="cidade">
@@ -173,6 +175,31 @@
             <p class="form-hint" id="prestador-km-preview" role="status" aria-live="polite"></p>
         </section>
 
+        <section class="panel" id="prestador-sec-visibilidade">
+            <h2>Visibilidade por período</h2>
+            <p class="muted small panel-note">Para aparecer na busca dos clientes no dia escolhido, compre o <strong>período</strong> em que está disponível. Cada turno custa <strong>R$&nbsp;85</strong>; a <strong>diária completa</strong> (manhã + tarde + noite) sai por <strong>R$&nbsp;250</strong>.</p>
+            <div class="prestador-visibilidade" data-prestador-visibilidade>
+                <ul class="inline-badges prestador-visibilidade__tabela" aria-label="Tabela de preços">
+                    <li><strong>Manhã</strong> — R$&nbsp;85</li>
+                    <li><strong>Tarde</strong> — R$&nbsp;85</li>
+                    <li><strong>Noite</strong> — R$&nbsp;85</li>
+                    <li><strong>Diária</strong> — R$&nbsp;250</li>
+                </ul>
+                <fieldset class="prestador-visibilidade__opcoes">
+                    <legend class="stack-label">Períodos avulsos</legend>
+                    <label class="inline-check"><input type="checkbox" data-visibilidade-periodo="manha"> Manhã</label>
+                    <label class="inline-check"><input type="checkbox" data-visibilidade-periodo="tarde"> Tarde</label>
+                    <label class="inline-check"><input type="checkbox" data-visibilidade-periodo="noite"> Noite</label>
+                </fieldset>
+                <label class="inline-check prestador-visibilidade__diaria">
+                    <input type="checkbox" data-visibilidade-diaria> Diária completa (manhã + tarde + noite) — R$&nbsp;250
+                </label>
+                <p class="form-hint prestador-visibilidade__resumo" data-visibilidade-resumo role="status" aria-live="polite">A calcular…</p>
+                <button type="button" class="btn btn-small btn-primary" data-visibilidade-comprar disabled aria-disabled="true">Comprar visibilidade</button>
+                <p class="muted small form-hint" data-visibilidade-feedback role="status" aria-live="polite"></p>
+            </div>
+        </section>
+
         <section class="panel" id="prestador-sec-area">
             <h2>Resumo do perfil</h2>
             <div class="stat-row">
@@ -185,7 +212,7 @@
 
         <section class="panel">
             <h2>Serviços e onde você aparece</h2>
-            <p class="muted small panel-note">Cliente te encontra por <strong>local + tipo de serviço</strong> e vê <strong>referência de preço</strong> (hora, diária ou fixo) se você cadastrou. Com pagamento pelo app (futuro), a política prevê <strong>R$ 2,00/km</strong> sobre <strong>ida e volta</strong> (a partir do km <strong>só ida</strong> no pedido), a favor do prestador, pago pelo cliente no <strong>cartão</strong> ou <strong>saldo</strong>; comissão da plataforma só sobre o valor do serviço — ver <a href="README.md">README</a>.</p>
+            <p class="muted small panel-note">Cliente te encontra por <strong>local + tipo de serviço</strong> e vê <strong>referência de preço</strong> (hora, diária ou fixo) se você cadastrou. No aceite, o cliente paga <strong>R$ 1,50/km</strong> (ida e volta) + <strong>taxa plataforma R$ 9,90</strong>; você recebe a <strong>diária</strong> + deslocamento integral — ver <a href="README.md">README</a>.</p>
             <ul class="inline-badges">
                 <li>Eletricista</li>
                 <li>Instalação de ventilador</li>
@@ -319,6 +346,7 @@
     <script src="/shared/taxa-aceite-ui.js"></script>
     <script src="/shared/cobranca-aceite-preview.js"></script>
     <script src="/shared/app-nf-recibo.js"></script>
+    <script src="/shared/prestador-visibilidade.js?v=1"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         window.GUIA_ME_mapaLocalizacao?.init({

@@ -24,6 +24,7 @@ import {
   quotePlatformAceiteFee,
   quotePrestadorFechamentoFee,
   quoteCobrancaAceiteCliente,
+  quotePrestadorVisibilidade,
 } from './platform-fee.mjs';
 import { assertFiscalPdfPayload, GARANTIA_SERVICO_MESES } from './fiscal-doc.mjs';
 import { isOrdersSqliteEnabled, sqliteInsertOrder, sqliteListAllOrders, sqliteGetOrderById, sqliteSaveOrder } from './sqlite-orders.mjs';
@@ -900,6 +901,19 @@ export function getTaxaAceiteCotacao(kmIda) {
 
 export function getTaxaPrestadorFechamentoCotacao() {
   return quotePrestadorFechamentoFee();
+}
+
+export function getPrestadorVisibilidadeCotacao(searchParams) {
+  const sp = searchParams || new URLSearchParams();
+  const diaria =
+    sp.get('diaria') === '1' ||
+    sp.get('diaria') === 'true' ||
+    String(sp.get('modo') || '').toLowerCase() === 'diaria';
+  const raw = String(sp.get('periodos') || '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  return quotePrestadorVisibilidade({ periodos: raw, diaria });
 }
 
 /** Prestador atribuído envia ou atualiza proposta de orçamento (pedido em estado `aceito`). */

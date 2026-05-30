@@ -1,5 +1,5 @@
 /**
- * Prévia da cobrança no aceite: deslocamento R$ 2/km (ida e volta) + US$ 5 plataforma.
+ * Prévia da cobrança no aceite: deslocamento R$ 1,50/km (ida e volta) + taxa plataforma R$ 9,90.
  */
 (function (g) {
   function fmtBRL(n) {
@@ -21,7 +21,7 @@
 
   function textoCotacao(dc) {
     if (!dc || dc.total_reais == null) {
-      return 'Cobrança no aceite: informe km (só ida) para ver deslocamento + US$ 5 plataforma + total.';
+      return 'Cobrança no aceite: informe km (só ida) para ver deslocamento + taxa plataforma R$ 9,90 + total.';
     }
     const d = dc.deslocamento;
     const pl = dc.plataforma;
@@ -31,19 +31,16 @@
         '1) Deslocamento ' +
           (d.descricao || '') +
           ' = ' +
-          fmtBRL(d.reais),
+          fmtBRL(d.reais) +
+          ' (repasse integral ao prestador)',
       );
     }
     if (pl) {
-      parts.push(
-        '2) Taxa plataforma US$ ' +
-          Number(pl.usd || 5).toFixed(2) +
-          ' (câmbio ' +
-          Number(pl.cambio_usd_brl).toFixed(4) +
-          ') = ' +
-          fmtBRL(pl.reais) +
-          ' (arred. p/ cima)',
-      );
+      const taxaPlataforma = pl.taxa_plataforma_reais != null ? pl.taxa_plataforma_reais : pl.credito_reais != null ? pl.credito_reais : pl.reais;
+      parts.push('2) Taxa plataforma (cliente paga): ' + fmtBRL(taxaPlataforma));
+    }
+    if (dc.prestador && dc.prestador.descricao) {
+      parts.push('3) ' + dc.prestador.descricao);
     }
     parts.push('Total a debitar: ' + fmtBRL(dc.total_reais) + '.');
     return parts.join(' ');

@@ -1,15 +1,22 @@
 /**
  * Taxas em USD convertidas para BRL (câmbio atualizado, arredondamento para cima).
  * Cobrança simulada no saldo ou cartão cadastrado.
- * - Cliente no aceite: deslocamento R$ 2/km (ida e volta) + US$ 5 plataforma → total em BRL.
+ * - Cliente no aceite: deslocamento R$ 1,50/km (ida e volta) + taxa plataforma R$ 9,90.
  * - Prestador: US$ 10 na conclusão do pedido (fechamento bilateral).
  */
 
 import {
   computeTaxaDeslocamento,
+  computePrestadorVisibilidade,
+  PERIODOS_VISIBILIDADE,
+  PERIODOS_VISIBILIDADE_LABELS,
+  PRESTADOR_VISIBILIDADE_DIARIA_REAIS,
+  PRESTADOR_VISIBILIDADE_POR_PERIODO_REAIS,
   TAXA_DESLOCAMENTO_POR_KM,
+  TAXA_PLATAFORMA_CLIENTE_REAIS,
 } from './pricing.mjs';
 
+/** @deprecated Legado USD — cobrança atual usa {@link TAXA_PLATAFORMA_CLIENTE_REAIS}. */
 export const PLATFORM_FEE_USD = 5;
 export const PRESTADOR_FECHAMENTO_FEE_USD = 10;
 
@@ -61,11 +68,10 @@ export async function quotePlatformAceiteFee() {
  * @param {unknown} kmIda km só ida no pedido
  */
 export async function quoteCobrancaAceiteCliente(kmIda) {
-  const rate = await fetchUsdBrlRate();
   const desloc = computeTaxaDeslocamento(kmIda);
-  const plataformaReais = platformFeeBrlFromRate(PLATFORM_FEE_USD, rate);
+  const taxaPlataformaReais = TAXA_PLATAFORMA_CLIENTE_REAIS;
   const deslocReais = desloc.taxa;
-  const totalReais = Math.round((deslocReais + plataformaReais) * 100) / 100;
+  const totalReais = Math.round((deslocReais + taxaPlataformaReais) * 100) / 100;
   return {
     deslocamento: {
       km_ida: desloc.km,
@@ -73,29 +79,60 @@ export async function quoteCobrancaAceiteCliente(kmIda) {
       taxa_por_km_reais: TAXA_DESLOCAMENTO_POR_KM,
       reais: deslocReais,
       descricao: `${desloc.km} km ida → ${desloc.km_faturados} km ida e volta × R$ ${TAXA_DESLOCAMENTO_POR_KM.toFixed(2).replace('.', ',')}/km`,
+      repasse_prestador: true,
     },
     plataforma: {
-      usd: PLATFORM_FEE_USD,
-      cambio_usd_brl: rate,
-      reais: plataformaReais,
-      arredondamento: 'ceil',
+      taxa_plataforma_reais: taxaPlataformaReais,
+      credito_reais: taxaPlataformaReais,
+      reais: taxaPlataformaReais,
+      descricao: 'Taxa paga pelo cliente à plataforma',
+    },
+    prestador: {
+      recebe_diaria: true,
+      recebe_deslocamento_integral: true,
+      descricao: 'Prestador recebe a diária acordada + deslocamento (repasse integral dos km)',
     },
     total_reais: totalReais,
   };
 }
 
-function resumoCobrancaAceiteErro(deslocReais, platformReais, totalReais, rate) {
+function resumoCobrancaAceiteErro(deslocReais, taxaPlataformaReais, totalReais) {
   const d = deslocReais.toFixed(2).replace('.', ',');
-  const p = platformReais.toFixed(2).replace('.', ',');
+  const p = taxaPlataformaReais.toFixed(2).replace('.', ',');
   const t = totalReais.toFixed(2).replace('.', ',');
   return (
-    `Cobrança no aceite: deslocamento R$ ${d} + taxa plataforma US$ ${PLATFORM_FEE_USD.toFixed(2)} (≈ R$ ${p}, câmbio ${rate.toFixed(4)}, arredondado para cima) = total R$ ${t}. ` +
+    `Cobrança no aceite: deslocamento R$ ${d} + taxa plataforma R$ ${p} = total R$ ${t}. ` +
     'O cliente precisa de saldo ou cartão cadastrado. O prestador não pode aceitar até regularizar.'
   );
 }
 
 export async function quotePrestadorFechamentoFee() {
   return quoteUsdFee(PRESTADOR_FECHAMENTO_FEE_USD);
+}
+
+/**
+ * Tabela e cotação da compra de visibilidade (prestador).
+ * @param {{ periodos?: string[], diaria?: boolean }} opts
+ */
+export function quotePrestadorVisibilidade(opts = {}) {
+  const cotacao = computePrestadorVisibilidade(opts);
+  return {
+    catalogo: {
+      preco_por_periodo_reais: PRESTADOR_VISIBILIDADE_POR_PERIODO_REAIS,
+      preco_diaria_reais: PRESTADOR_VISIBILIDADE_DIARIA_REAIS,
+      periodos: PERIODOS_VISIBILIDADE.map((id) => ({
+        id,
+        label: PERIODOS_VISIBILIDADE_LABELS[id],
+        reais: PRESTADOR_VISIBILIDADE_POR_PERIODO_REAIS,
+      })),
+      diaria: {
+        label: 'Diária completa',
+        periodos_inclusos: PERIODOS_VISIBILIDADE.map((id) => PERIODOS_VISIBILIDADE_LABELS[id]),
+        reais: PRESTADOR_VISIBILIDADE_DIARIA_REAIS,
+      },
+    },
+    ...cotacao,
+  };
 }
 
 async function quoteUsdFee(usd) {
@@ -170,7 +207,6 @@ export async function cobrarTaxaAceitePlataforma(store, order) {
   if (!acc.perfil || typeof acc.perfil !== 'object') acc.perfil = {};
 
   const cotacao = await quoteCobrancaAceiteCliente(order.km_deslocamento);
-  const rate = cotacao.plataforma.cambio_usd_brl;
   const deslocReais = cotacao.deslocamento.reais;
   const plataformaReais = cotacao.plataforma.reais;
   const totalReais = cotacao.total_reais;
@@ -185,11 +221,12 @@ export async function cobrarTaxaAceitePlataforma(store, order) {
     acc.perfil.preferencia_pagamento || 'saldo',
   );
   if (!metodo) {
-    throw new Error(resumoCobrancaAceiteErro(deslocReais, plataformaReais, totalReais, rate));
+    throw new Error(resumoCobrancaAceiteErro(deslocReais, plataformaReais, totalReais));
   }
 
-  order.taxa_aceite_usd = PLATFORM_FEE_USD;
-  order.taxa_aceite_cambio_usd_brl = rate;
+  order.taxa_aceite_usd = null;
+  order.taxa_aceite_cambio_usd_brl = null;
+  order.taxa_aceite_credito_reais = plataformaReais;
   order.taxa_aceite_plataforma_reais = plataformaReais;
   order.taxa_aceite_deslocamento_reais = deslocReais;
   order.taxa_aceite_km_faturados = cotacao.deslocamento.km_faturados_ida_volta;
@@ -201,14 +238,14 @@ export async function cobrarTaxaAceitePlataforma(store, order) {
   return {
     cobrado: true,
     jaCobrado: false,
-    usd: PLATFORM_FEE_USD,
-    cambio: rate,
+    credito_reais: plataformaReais,
     reais: totalReais,
     total_reais: totalReais,
     deslocamento_reais: deslocReais,
     plataforma_reais: plataformaReais,
     deslocamento: cotacao.deslocamento,
     plataforma: cotacao.plataforma,
+    prestador: cotacao.prestador,
     metodo,
   };
 }

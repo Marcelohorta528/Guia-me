@@ -144,7 +144,7 @@
 
         <section class="panel" id="cliente-sec-mapa-km">
             <h2>3. Mapa e quilometragem</h2>
-            <p class="muted small panel-note">Marque a <strong>localização</strong> (GPS) e indique <strong>km só ida</strong> e <strong>metragem (m²)</strong>. O mapa mostra <strong>prestadores próximos</strong> só como ícones (sem endereço), estilo Uber. Cobrança no aceite: <strong>R$&nbsp;2,00/km</strong> ida e volta + <strong>US$&nbsp;5</strong> plataforma.</p>
+            <p class="muted small panel-note">Marque a <strong>localização</strong> (GPS) e indique <strong>km só ida</strong> e <strong>metragem (m²)</strong>. O mapa mostra <strong>prestadores próximos</strong> só como ícones (sem endereço), estilo Uber. No aceite: deslocamento <strong>R$&nbsp;1,50/km</strong> ida e volta + <strong>taxa plataforma R$&nbsp;9,90</strong> (paga pelo cliente).</p>
             <p class="fake-map-zone" id="cliente-mapa-km-zone">Região: Copacabana (Rio de Janeiro)</p>
             <div class="map-osm-wrap">
                 <button type="button" class="map-gps-btn" id="cliente-mapa-km-gps-btn" title="Minha localização" aria-label="Centrar mapa na minha localização">
@@ -200,7 +200,7 @@
 
         <section class="panel" id="cliente-sec-pedido">
             <h2>6. Solicitar o serviço</h2>
-            <p class="muted small panel-note">Ao enviar, o pedido entra na <strong>fila de espera</strong> e fica <strong>aguardando o aceite inicial de negociação</strong> por um prestador. Só depois disso começam orçamento e chat. <strong>No aceite</strong>, debitamos deslocamento + US$&nbsp;5 plataforma. Anexe <strong>fotos</strong> e <strong>km/m²</strong> em <a href="#cliente-sec-mapa-km">Mapa e quilometragem</a>.</p>
+            <p class="muted small panel-note">Ao enviar, o pedido entra na <strong>fila de espera</strong> e fica <strong>aguardando o aceite inicial de negociação</strong> por um prestador. Só depois disso começam orçamento e chat. <strong>No aceite</strong>, debitamos deslocamento (R$&nbsp;1,50/km ida e volta) + <strong>taxa plataforma R$&nbsp;9,90</strong> (paga pelo cliente). Anexe <strong>fotos</strong> e <strong>km/m²</strong> em <a href="#cliente-sec-mapa-km">Mapa e quilometragem</a>.</p>
             <form class="stack-form" id="form-pedido">
                 <label>Descreva o que precisa
                     <div class="pedido-desc-historico" id="cliente-pedido-desc-historico-wrap" hidden>
@@ -275,7 +275,7 @@
                 </article>
                 <article class="app-account-card" id="cliente-sec-pagamentos">
                     <h3>Pagamentos</h3>
-                    <p class="muted small">No <strong>aceite do prestador</strong>, debitamos no seu <strong>saldo</strong> ou <strong>cartão</strong>: <strong>deslocamento R$ 2,00/km</strong> sobre <strong>ida e volta</strong> (a partir do km só ida do pedido) <strong>+ taxa plataforma US$ 5,00</strong> convertida para real (câmbio do dia, arredondada para cima). O valor final é a soma das duas rubricas.</p>
+                    <p class="muted small">No <strong>aceite do prestador</strong>, debitamos no seu <strong>saldo</strong> ou <strong>cartão</strong>: <strong>deslocamento R$ 1,50/km</strong> sobre <strong>ida e volta</strong> (repasse integral ao prestador) <strong>+ taxa plataforma R$ 9,90</strong> (valor que você paga à plataforma). O prestador recebe a <strong>diária</strong> acordada além do deslocamento.</p>
                     <p class="muted small" id="cliente-pagamentos-cotacao" aria-live="polite">Cotação atual: a carregar…</p>
                     <p class="muted small" id="cliente-pagamentos-saldo" aria-live="polite"></p>
                 </article>
