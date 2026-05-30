@@ -86,7 +86,7 @@
                 <article class="app-account-card" id="prestador-sec-pagamentos">
                     <h3>Pagamentos e repasses</h3>
                     <p class="muted small"><strong>Visibilidade:</strong> compre <strong>manhã</strong>, <strong>tarde</strong> ou <strong>noite</strong> por <strong>R$ 85</strong> cada, ou a <strong>diária completa por R$ 250</strong> — secção <a href="#prestador-sec-visibilidade">Visibilidade por período</a>.</p>
-                    <p class="muted small"><strong>Cliente (no aceite):</strong> paga deslocamento <strong>R$ 1,50/km ida e volta</strong> + <strong>taxa plataforma R$ 9,90</strong>. <strong>Você recebe:</strong> <strong>diária</strong> acordada + deslocamento integral. Ao concluir: taxa de <strong>US$ 10,00</strong> em real no saldo ou cartão. Ver <a href="README.md">README</a>.</p>
+                    <p class="muted small"><strong>Cliente (no aceite):</strong> paga a você <strong>deslocamento R$ 1,50/km</strong> (ida e volta) + <strong>diária combinada</strong>. <strong>Você paga à plataforma:</strong> <strong>R$ 9,90</strong> ao aceitar. Ao concluir: taxa de <strong>US$ 10,00</strong> em real no saldo ou cartão. Ver <a href="README.md">README</a>.</p>
                     <p class="muted small" id="prestador-pagamentos-cotacao" aria-live="polite">Cotação da taxa de fechamento: a carregar…</p>
                     <p class="muted small" id="prestador-pagamentos-saldo" aria-live="polite"></p>
                 </article>
@@ -212,7 +212,7 @@
 
         <section class="panel">
             <h2>Serviços e onde você aparece</h2>
-            <p class="muted small panel-note">Cliente te encontra por <strong>local + tipo de serviço</strong> e vê <strong>referência de preço</strong> (hora, diária ou fixo) se você cadastrou. No aceite, o cliente paga <strong>R$ 1,50/km</strong> (ida e volta) + <strong>taxa plataforma R$ 9,90</strong>; você recebe a <strong>diária</strong> + deslocamento integral — ver <a href="README.md">README</a>.</p>
+            <p class="muted small panel-note">Cliente te encontra por <strong>local + tipo de serviço</strong> e vê <strong>referência de preço</strong> (hora, diária ou fixo) se você cadastrou. No aceite, o cliente paga a você <strong>deslocamento R$ 1,50/km</strong> (ida e volta) + <strong>diária combinada</strong>; você paga à plataforma <strong>R$ 9,90</strong> — ver <a href="README.md">README</a>.</p>
             <ul class="inline-badges">
                 <li>Eletricista</li>
                 <li>Instalação de ventilador</li>
@@ -290,7 +290,7 @@
             <button type="button" class="btn btn-secondary" id="prestador-btn-refresh-pedidos">Atualizar lista</button>
             <p class="form-hint" id="prestador-pedidos-api-feedback" role="status" aria-live="polite"></p>
             <h3 class="muted small" style="margin-top: 1rem">Fila de espera — solicitações na sua área</h3>
-            <p class="form-hint pedido-fila-hint" style="margin-top: 6px">Pedidos e solicitações ficam aqui até o <strong>aceite inicial de negociação</strong>. Use <strong>Aceitar e iniciar negociação</strong> em cada cartão (cobrança do cliente: deslocamento + US$&nbsp;5).</p>
+            <p class="form-hint pedido-fila-hint" style="margin-top: 6px">Pedidos e solicitações ficam aqui até o <strong>aceite inicial de negociação</strong>. Use <strong>Aceitar e iniciar negociação</strong> em cada cartão (cliente paga deslocamento + diária; você paga à plataforma R$&nbsp;9,90).</p>
             <ul class="card-list" id="prestador-pedidos-disponiveis-list"></ul>
             <h3 class="muted small" style="margin-top: 1rem">Em negociação e concluídos</h3>
             <ul class="card-list" id="prestador-meus-pedidos-list"></ul>
@@ -1121,9 +1121,13 @@
               const ta = d.taxa_aceite || {};
               if (typeof guiameTextoResumoCobrancaAceite === 'function' && ped.taxa_aceite_cobrada_at) {
                 msg += ' · ' + guiameTextoResumoCobrancaAceite(ped);
-              } else if (ta.total_reais != null || ta.reais != null) {
-                const tot = ta.total_reais ?? ta.reais;
-                msg += ' · Total debitado do cliente: R$ ' + Number(tot).toFixed(2).replace('.', ',');
+              } else if (ta.total_cliente_reais != null || ta.total_reais != null || ta.reais != null) {
+                const tot = ta.total_cliente_reais ?? ta.total_reais ?? ta.reais;
+                msg += ' · Cliente debitado: R$ ' + Number(tot).toFixed(2).replace('.', ',');
+                if (ta.total_prestador_plataforma_reais != null || ta.plataforma_reais != null) {
+                  const plat = ta.total_prestador_plataforma_reais ?? ta.plataforma_reais;
+                  msg += ' · Você pagou à plataforma: R$ ' + Number(plat).toFixed(2).replace('.', ',');
+                }
               }
               fb.textContent = msg;
             } else {

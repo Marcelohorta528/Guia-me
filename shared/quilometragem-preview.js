@@ -35,7 +35,7 @@
       const kmIda = Math.min(maxKm, Math.max(0, k));
       const kmFaturados = kmIda * 2;
       const taxa = Math.round(kmFaturados * TAXA_KM * 100) / 100;
-      preview.textContent = `Km ida${ctx}: ${kmIda} → ida e volta: ${kmFaturados} km faturados × R$ ${TAXA_KM.toFixed(2).replace('.', ',')}/km ≈ R$ ${taxa.toFixed(2).replace('.', ',')} de deslocamento (repasse ao prestador; soma-se taxa plataforma R$ ${TAXA_PLATAFORMA.toFixed(2).replace('.', ',')} paga pelo cliente — ver prévia abaixo).`;
+      preview.textContent = `Km ida${ctx}: ${kmIda} → ida e volta: ${kmFaturados} km faturados × R$ ${TAXA_KM.toFixed(2).replace('.', ',')}/km ≈ R$ ${taxa.toFixed(2).replace('.', ',')} de deslocamento (cliente paga ao prestador). Soma-se diária combinada. Prestador paga à plataforma R$ ${TAXA_PLATAFORMA.toFixed(2).replace('.', ',')} no aceite — ver prévia abaixo.`;
     }
 
     input.addEventListener('input', refresh);

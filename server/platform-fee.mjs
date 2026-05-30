@@ -1,8 +1,9 @@
 /**
  * Taxas em USD convertidas para BRL (câmbio atualizado, arredondamento para cima).
  * Cobrança simulada no saldo ou cartão cadastrado.
- * - Cliente no aceite: deslocamento R$ 1,50/km (ida e volta) + taxa plataforma R$ 9,90.
- * - Prestador: US$ 10 na conclusão do pedido (fechamento bilateral).
+ * - Cliente no aceite: deslocamento R$ 1,50/km (ida e volta) + diária combinada → prestador.
+ * - Prestador no aceite: taxa plataforma R$ 9,90 → Guia-me.
+ * - Prestador na conclusão: US$ 10 (fechamento bilateral).
  */
 
 import {
@@ -13,10 +14,10 @@ import {
   PRESTADOR_VISIBILIDADE_DIARIA_REAIS,
   PRESTADOR_VISIBILIDADE_POR_PERIODO_REAIS,
   TAXA_DESLOCAMENTO_POR_KM,
-  TAXA_PLATAFORMA_CLIENTE_REAIS,
+  TAXA_PLATAFORMA_PRESTADOR_REAIS,
 } from './pricing.mjs';
 
-/** @deprecated Legado USD — cobrança atual usa {@link TAXA_PLATAFORMA_CLIENTE_REAIS}. */
+/** @deprecated Legado USD — cobrança atual usa {@link TAXA_PLATAFORMA_PRESTADOR_REAIS}. */
 export const PLATFORM_FEE_USD = 5;
 export const PRESTADOR_FECHAMENTO_FEE_USD = 10;
 
@@ -64,14 +65,21 @@ export async function quotePlatformAceiteFee() {
 }
 
 /**
- * Discriminação da cobrança ao cliente quando o prestador aceita.
+ * Discriminação da cobrança no aceite (cliente → prestador; prestador → plataforma).
  * @param {unknown} kmIda km só ida no pedido
+ * @param {unknown} [diariaReais] diária combinada (repasse ao prestador)
  */
-export async function quoteCobrancaAceiteCliente(kmIda) {
+export async function quoteCobrancaAceiteCliente(kmIda, diariaReais) {
   const desloc = computeTaxaDeslocamento(kmIda);
-  const taxaPlataformaReais = TAXA_PLATAFORMA_CLIENTE_REAIS;
+  let diaria = Number(String(diariaReais ?? '').replace(',', '.'));
+  if (!Number.isFinite(diaria) || diaria < 0) diaria = 0;
+  diaria = Math.round(diaria * 100) / 100;
+
+  const taxaPlataformaReais = TAXA_PLATAFORMA_PRESTADOR_REAIS;
   const deslocReais = desloc.taxa;
-  const totalReais = Math.round((deslocReais + taxaPlataformaReais) * 100) / 100;
+  const totalClienteReais = Math.round((deslocReais + diaria) * 100) / 100;
+  const totalPrestadorRecebe = totalClienteReais;
+
   return {
     deslocamento: {
       km_ida: desloc.km,
@@ -79,30 +87,63 @@ export async function quoteCobrancaAceiteCliente(kmIda) {
       taxa_por_km_reais: TAXA_DESLOCAMENTO_POR_KM,
       reais: deslocReais,
       descricao: `${desloc.km} km ida → ${desloc.km_faturados} km ida e volta × R$ ${TAXA_DESLOCAMENTO_POR_KM.toFixed(2).replace('.', ',')}/km`,
+      destino: 'prestador',
+      paga_por: 'cliente',
+      repasse_prestador: true,
+    },
+    diaria: {
+      reais: diaria,
+      combinada: diaria > 0,
+      descricao:
+        diaria > 0
+          ? 'Diária combinada (paga pelo cliente ao prestador)'
+          : 'Diária combinada — valor a fechar na negociação',
+      destino: 'prestador',
+      paga_por: 'cliente',
       repasse_prestador: true,
     },
     plataforma: {
       taxa_plataforma_reais: taxaPlataformaReais,
-      credito_reais: taxaPlataformaReais,
       reais: taxaPlataformaReais,
-      descricao: 'Taxa paga pelo cliente à plataforma',
+      descricao: 'Taxa paga pelo prestador à plataforma Guia-me',
+      destino: 'plataforma',
+      paga_por: 'prestador',
+    },
+    cliente: {
+      total_reais: totalClienteReais,
+      descricao: 'Cliente paga deslocamento + diária combinada ao prestador',
     },
     prestador: {
-      recebe_diaria: true,
-      recebe_deslocamento_integral: true,
-      descricao: 'Prestador recebe a diária acordada + deslocamento (repasse integral dos km)',
+      recebe_deslocamento_reais: deslocReais,
+      recebe_diaria_reais: diaria,
+      recebe_total_reais: totalPrestadorRecebe,
+      paga_plataforma_reais: taxaPlataformaReais,
+      descricao: 'Prestador recebe deslocamento + diária; paga R$ 9,90 à plataforma',
     },
-    total_reais: totalReais,
+    total_cliente_reais: totalClienteReais,
+    total_prestador_plataforma_reais: taxaPlataformaReais,
+    total_prestador_recebe_reais: totalPrestadorRecebe,
+    total_reais: totalClienteReais,
   };
 }
 
-function resumoCobrancaAceiteErro(deslocReais, taxaPlataformaReais, totalReais) {
+function resumoCobrancaClienteErro(deslocReais, diariaReais, totalClienteReais) {
   const d = deslocReais.toFixed(2).replace('.', ',');
-  const p = taxaPlataformaReais.toFixed(2).replace('.', ',');
-  const t = totalReais.toFixed(2).replace('.', ',');
+  const di = diariaReais.toFixed(2).replace('.', ',');
+  const t = totalClienteReais.toFixed(2).replace('.', ',');
+  const diariaTxt =
+    diariaReais > 0 ? `diária combinada R$ ${di}` : 'diária combinada (a definir)';
   return (
-    `Cobrança no aceite: deslocamento R$ ${d} + taxa plataforma R$ ${p} = total R$ ${t}. ` +
-    'O cliente precisa de saldo ou cartão cadastrado. O prestador não pode aceitar até regularizar.'
+    `Cobrança do cliente no aceite: deslocamento R$ ${d} + ${diariaTxt} = total R$ ${t}. ` +
+    'O cliente precisa de saldo ou cartão cadastrado.'
+  );
+}
+
+function resumoCobrancaPrestadorPlataformaErro(taxaPlataformaReais) {
+  const p = taxaPlataformaReais.toFixed(2).replace('.', ',');
+  return (
+    `Taxa da plataforma no aceite: R$ ${p} (cobrada do prestador). ` +
+    'Você precisa de saldo ou cartão cadastrado para aceitar o pedido.'
   );
 }
 
@@ -177,13 +218,13 @@ function debitarTaxaPerfil(perfil, feeBrl, pref) {
 }
 
 /**
- * Debita taxa do cliente e preenche campos no pedido. Só na primeira cobrança.
+ * Debita cobranças no aceite: cliente (desloc. + diária) e prestador (taxa plataforma). Só na primeira cobrança.
  * @param {object} store
  * @param {object} order
  */
 export async function cobrarTaxaAceitePlataforma(store, order) {
   if (order.taxa_aceite_cobrada_at) {
-    const total =
+    const totalCliente =
       order.taxa_aceite_total_reais != null
         ? Number(order.taxa_aceite_total_reais)
         : Number(order.taxa_aceite_reais);
@@ -192,62 +233,106 @@ export async function cobrarTaxaAceitePlataforma(store, order) {
       jaCobrado: true,
       usd: order.taxa_aceite_usd ?? PLATFORM_FEE_USD,
       cambio: order.taxa_aceite_cambio_usd_brl,
-      reais: total,
-      total_reais: total,
+      reais: totalCliente,
+      total_reais: totalCliente,
+      total_cliente_reais: totalCliente,
       deslocamento_reais: order.taxa_aceite_deslocamento_reais,
+      diaria_reais: order.taxa_aceite_diaria_reais,
       plataforma_reais: order.taxa_aceite_plataforma_reais,
       metodo: order.taxa_aceite_metodo,
+      prestador_plataforma_metodo: order.taxa_aceite_prestador_metodo,
     };
   }
 
-  const acc = store.accounts.find((a) => a.id === order.clienteId);
-  if (!acc || acc.tipo !== 'cliente') {
-    throw new Error('Conta do cliente não encontrada para cobrar taxa de aceite');
+  if (!order.prestadorId) {
+    throw new Error('Pedido sem prestador atribuído para cobrar taxas de aceite');
   }
-  if (!acc.perfil || typeof acc.perfil !== 'object') acc.perfil = {};
 
-  const cotacao = await quoteCobrancaAceiteCliente(order.km_deslocamento);
+  const clienteAcc = store.accounts.find((a) => a.id === order.clienteId);
+  if (!clienteAcc || clienteAcc.tipo !== 'cliente') {
+    throw new Error('Conta do cliente não encontrada para cobrar no aceite');
+  }
+  if (!clienteAcc.perfil || typeof clienteAcc.perfil !== 'object') clienteAcc.perfil = {};
+
+  const prestadorAcc = store.accounts.find((a) => a.id === order.prestadorId);
+  if (!prestadorAcc || prestadorAcc.tipo !== 'prestador') {
+    throw new Error('Conta do prestador não encontrada para cobrar taxa da plataforma');
+  }
+  if (!prestadorAcc.perfil || typeof prestadorAcc.perfil !== 'object') prestadorAcc.perfil = {};
+
+  const cotacao = await quoteCobrancaAceiteCliente(order.km_deslocamento, resolveDiariaCombinada(order));
   const deslocReais = cotacao.deslocamento.reais;
+  const diariaReais = cotacao.diaria.reais;
   const plataformaReais = cotacao.plataforma.reais;
-  const totalReais = cotacao.total_reais;
+  const totalClienteReais = cotacao.total_cliente_reais;
 
   order.km_deslocamento = cotacao.deslocamento.km_ida;
   order.taxa_deslocamento_reais = deslocReais;
   order.taxa_deslocamento_por_km = TAXA_DESLOCAMENTO_POR_KM;
 
-  const metodo = debitarTaxaPerfil(
-    acc.perfil,
-    totalReais,
-    acc.perfil.preferencia_pagamento || 'saldo',
+  const metodoCliente = debitarTaxaPerfil(
+    clienteAcc.perfil,
+    totalClienteReais,
+    clienteAcc.perfil.preferencia_pagamento || 'saldo',
   );
-  if (!metodo) {
-    throw new Error(resumoCobrancaAceiteErro(deslocReais, plataformaReais, totalReais));
+  if (!metodoCliente) {
+    throw new Error(resumoCobrancaClienteErro(deslocReais, diariaReais, totalClienteReais));
+  }
+
+  const metodoPrestador = debitarTaxaPerfil(
+    prestadorAcc.perfil,
+    plataformaReais,
+    prestadorAcc.perfil.preferencia_pagamento || 'saldo',
+  );
+  if (!metodoPrestador) {
+    throw new Error(resumoCobrancaPrestadorPlataformaErro(plataformaReais));
   }
 
   order.taxa_aceite_usd = null;
   order.taxa_aceite_cambio_usd_brl = null;
-  order.taxa_aceite_credito_reais = plataformaReais;
+  order.taxa_aceite_credito_reais = null;
   order.taxa_aceite_plataforma_reais = plataformaReais;
   order.taxa_aceite_deslocamento_reais = deslocReais;
+  order.taxa_aceite_diaria_reais = diariaReais;
   order.taxa_aceite_km_faturados = cotacao.deslocamento.km_faturados_ida_volta;
-  order.taxa_aceite_total_reais = totalReais;
-  order.taxa_aceite_reais = totalReais;
+  order.taxa_aceite_total_reais = totalClienteReais;
+  order.taxa_aceite_reais = totalClienteReais;
   order.taxa_aceite_cobrada_at = new Date().toISOString();
-  order.taxa_aceite_metodo = metodo;
+  order.taxa_aceite_metodo = metodoCliente;
+  order.taxa_aceite_prestador_metodo = metodoPrestador;
 
   return {
     cobrado: true,
     jaCobrado: false,
-    credito_reais: plataformaReais,
-    reais: totalReais,
-    total_reais: totalReais,
+    reais: totalClienteReais,
+    total_reais: totalClienteReais,
+    total_cliente_reais: totalClienteReais,
+    total_prestador_plataforma_reais: plataformaReais,
     deslocamento_reais: deslocReais,
+    diaria_reais: diariaReais,
     plataforma_reais: plataformaReais,
     deslocamento: cotacao.deslocamento,
+    diaria: cotacao.diaria,
     plataforma: cotacao.plataforma,
     prestador: cotacao.prestador,
-    metodo,
+    cliente: cotacao.cliente,
+    metodo: metodoCliente,
+    prestador_plataforma_metodo: metodoPrestador,
   };
+}
+
+function resolveDiariaCombinada(order) {
+  const candidates = [
+    order?.taxa_aceite_diaria_reais,
+    order?.diaria_combinada_reais,
+    order?.orcamentoValor,
+    order?.valor_servico,
+  ];
+  for (const c of candidates) {
+    const n = Number(String(c ?? '').replace(',', '.'));
+    if (Number.isFinite(n) && n > 0) return Math.round(n * 100) / 100;
+  }
+  return 0;
 }
 
 /**

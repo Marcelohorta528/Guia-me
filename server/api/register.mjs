@@ -322,7 +322,10 @@ export function registerApiRoutes(router) {
 
   router.get('/api/taxa-aceite/cotacao', async ({ res, url }) => {
     try {
-      const cotacao = await getTaxaAceiteCotacao(url.searchParams.get('km') ?? undefined);
+      const cotacao = await getTaxaAceiteCotacao(
+        url.searchParams.get('km') ?? undefined,
+        url.searchParams.get('diaria') ?? undefined,
+      );
       json(res, 200, { ok: true, ...cotacao });
     } catch (e) {
       json(res, 500, { ok: false, error: String(e?.message || e) });

@@ -806,8 +806,10 @@ export function createPedido(token, body) {
       taxa_aceite_reais: null,
       taxa_aceite_cobrada_at: null,
       taxa_aceite_metodo: null,
+      taxa_aceite_prestador_metodo: null,
       taxa_aceite_plataforma_reais: null,
       taxa_aceite_deslocamento_reais: null,
+      taxa_aceite_diaria_reais: null,
       taxa_aceite_km_faturados: null,
       taxa_aceite_total_reais: null,
       taxa_prestador_fechamento_usd: null,
@@ -894,9 +896,9 @@ export function aceitarPedido(token, pedidoId) {
   });
 }
 
-/** Cotação atual da taxa de aceite (US$ 5 → BRL, arredondado para cima). */
-export function getTaxaAceiteCotacao(kmIda) {
-  return quoteCobrancaAceiteCliente(kmIda);
+/** Cotação no aceite: cliente paga desloc. + diária; prestador paga R$ 9,90 à plataforma. */
+export function getTaxaAceiteCotacao(kmIda, diariaReais) {
+  return quoteCobrancaAceiteCliente(kmIda, diariaReais);
 }
 
 export function getTaxaPrestadorFechamentoCotacao() {

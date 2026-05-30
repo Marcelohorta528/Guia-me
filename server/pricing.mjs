@@ -1,10 +1,12 @@
 /** Política de preços documentada no README (pagamentos). Km no pedido = ida; taxa = ida e volta × R$/km. */
 
 export const TAXA_DESLOCAMENTO_POR_KM = 1.5;
-/** Valor fixo que o cliente paga à plataforma no aceite do prestador. */
-export const TAXA_PLATAFORMA_CLIENTE_REAIS = 9.9;
-/** @deprecated Use {@link TAXA_PLATAFORMA_CLIENTE_REAIS}. */
-export const CREDITO_CLIENTE_ACEITE_REAIS = TAXA_PLATAFORMA_CLIENTE_REAIS;
+/** Valor fixo que o prestador paga à plataforma no aceite do pedido. */
+export const TAXA_PLATAFORMA_PRESTADOR_REAIS = 9.9;
+/** @deprecated Use {@link TAXA_PLATAFORMA_PRESTADOR_REAIS}. */
+export const TAXA_PLATAFORMA_CLIENTE_REAIS = TAXA_PLATAFORMA_PRESTADOR_REAIS;
+/** @deprecated Use {@link TAXA_PLATAFORMA_PRESTADOR_REAIS}. */
+export const CREDITO_CLIENTE_ACEITE_REAIS = TAXA_PLATAFORMA_PRESTADOR_REAIS;
 export const COMISSAO_APP_PERCENT = 15;
 export const VALOR_MIN_SERVICO_APP = 100;
 export const KM_DESLOCAMENTO_MAX = 150;

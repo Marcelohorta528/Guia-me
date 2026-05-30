@@ -88,7 +88,7 @@
     const mid = [(cliente[0] + prestador[0]) / 2, (cliente[1] + prestador[1]) / 2];
     const kmFaturados = KM_IDA * 2;
     const taxa = kmFaturados * TAXA_KM;
-    const totalAceite = Math.round((taxa + TAXA_PLATAFORMA) * 100) / 100;
+    const totalCliente = Math.round(taxa * 100) / 100;
 
     L.marker(mid, {
       icon: L.divIcon({
@@ -109,9 +109,10 @@
         <li><span class="hero-map-demo__stat-label">Km só ida</span><strong>${KM_IDA} km</strong></li>
         <li><span class="hero-map-demo__stat-label">Ida + volta</span><strong>${kmFaturados} km</strong></li>
         <li><span class="hero-map-demo__stat-label">Deslocamento</span><strong>R$ ${taxa.toFixed(2).replace('.', ',')}</strong></li>
-        <li><span class="hero-map-demo__stat-label">Taxa plataforma</span><strong>R$ ${TAXA_PLATAFORMA.toFixed(2).replace('.', ',')}</strong></li>
-        <li><span class="hero-map-demo__stat-label">Total no aceite</span><strong>R$ ${totalAceite.toFixed(2).replace('.', ',')}</strong></li>
-        <li><span class="hero-map-demo__stat-label">Prestador recebe</span><strong>diária + desloc.</strong></li>
+        <li><span class="hero-map-demo__stat-label">Diária combinada</span><strong>a combinar</strong></li>
+        <li><span class="hero-map-demo__stat-label">Cliente paga</span><strong>desloc. + diária</strong></li>
+        <li><span class="hero-map-demo__stat-label">Prestador → plataforma</span><strong>R$ ${TAXA_PLATAFORMA.toFixed(2).replace('.', ',')}</strong></li>
+        <li><span class="hero-map-demo__stat-label">Mín. cliente*</span><strong>R$ ${totalCliente.toFixed(2).replace('.', ',')}</strong></li>
       `;
     }
 

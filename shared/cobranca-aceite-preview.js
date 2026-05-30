@@ -1,5 +1,5 @@
 /**
- * Prévia da cobrança no aceite: deslocamento R$ 1,50/km (ida e volta) + taxa plataforma R$ 9,90.
+ * Prévia no aceite: cliente paga desloc. + diária ao prestador; prestador paga R$ 9,90 à plataforma.
  */
 (function (g) {
   function fmtBRL(n) {
@@ -7,11 +7,20 @@
     return 'R$ ' + Number(n).toFixed(2).replace('.', ',');
   }
 
-  async function fetchCotacao(km) {
-    const raw = String(km ?? '').trim().replace(',', '.');
-    const q = raw && Number.isFinite(Number(raw)) ? '?km=' + encodeURIComponent(raw) : '';
+  function buildQuery(km, diaria) {
+    const params = [];
+    const rawKm = String(km ?? '').trim().replace(',', '.');
+    if (rawKm && Number.isFinite(Number(rawKm))) params.push('km=' + encodeURIComponent(rawKm));
+    const rawDi = String(diaria ?? '').trim().replace(',', '.');
+    if (rawDi && Number.isFinite(Number(rawDi)) && Number(rawDi) > 0) {
+      params.push('diaria=' + encodeURIComponent(rawDi));
+    }
+    return params.length ? '?' + params.join('&') : '';
+  }
+
+  async function fetchCotacao(km, diaria) {
     try {
-      const r = await fetch('/api/taxa-aceite/cotacao' + q);
+      const r = await fetch('/api/taxa-aceite/cotacao' + buildQuery(km, diaria));
       if (!r.ok) return null;
       return r.json();
     } catch {
@@ -21,54 +30,55 @@
 
   function textoCotacao(dc) {
     if (!dc || dc.total_reais == null) {
-      return 'Cobrança no aceite: informe km (só ida) para ver deslocamento + taxa plataforma R$ 9,90 + total.';
-    }
-    const d = dc.deslocamento;
-    const pl = dc.plataforma;
-    const parts = ['Cobrança no aceite do prestador (saldo ou cartão):'];
-    if (d) {
-      parts.push(
-        '1) Deslocamento ' +
-          (d.descricao || '') +
-          ' = ' +
-          fmtBRL(d.reais) +
-          ' (repasse integral ao prestador)',
+      return (
+        'No aceite: cliente paga ao prestador deslocamento (R$ 1,50/km) + diária combinada; ' +
+        'prestador paga à plataforma R$ 9,90.'
       );
     }
+    const d = dc.deslocamento;
+    const di = dc.diaria;
+    const pl = dc.plataforma;
+    const parts = ['No aceite do prestador:'];
+    if (d) {
+      parts.push(
+        'Cliente → prestador, deslocamento ' +
+          (d.descricao || '') +
+          ' = ' +
+          fmtBRL(d.reais),
+      );
+    }
+    if (di) {
+      parts.push(
+        'Cliente → prestador, ' +
+          (di.descricao || 'diária combinada') +
+          (di.reais > 0 ? ': ' + fmtBRL(di.reais) : ' (valor a combinar)'),
+      );
+    }
+    parts.push('Total debitado do cliente: ' + fmtBRL(dc.total_reais) + '.');
     if (pl) {
-      const taxaPlataforma = pl.taxa_plataforma_reais != null ? pl.taxa_plataforma_reais : pl.credito_reais != null ? pl.credito_reais : pl.reais;
-      parts.push('2) Taxa plataforma (cliente paga): ' + fmtBRL(taxaPlataforma));
+      const taxaPlataforma = pl.taxa_plataforma_reais != null ? pl.taxa_plataforma_reais : pl.reais;
+      parts.push('Prestador → plataforma Guia-me: ' + fmtBRL(taxaPlataforma) + '.');
     }
-    if (dc.prestador && dc.prestador.descricao) {
-      parts.push('3) ' + dc.prestador.descricao);
-    }
-    parts.push('Total a debitar: ' + fmtBRL(dc.total_reais) + '.');
     return parts.join(' ');
   }
 
-  /**
-   * @param {HTMLElement|null} el
-   * @param {unknown} km
-   */
-  async function renderInto(el, km) {
+  async function renderInto(el, km, diaria) {
     if (!el) return null;
     el.textContent = 'A calcular cobrança no aceite…';
-    const dc = await fetchCotacao(km);
+    const dc = await fetchCotacao(km, diaria);
     el.textContent = textoCotacao(dc);
     return dc;
   }
 
-  /**
-   * @param {{ inputId: string, previewId: string, onChange?: (dc: object|null) => void }} opts
-   */
   function bind(opts) {
     const input = document.getElementById(opts.inputId);
     const preview = document.getElementById(opts.previewId);
+    const diariaInput = opts.diariaInputId ? document.getElementById(opts.diariaInputId) : null;
     if (!input || !preview) return;
 
     let timer = null;
     async function refresh() {
-      const dc = await renderInto(preview, input.value);
+      const dc = await renderInto(preview, input.value, diariaInput ? diariaInput.value : undefined);
       if (typeof opts.onChange === 'function') opts.onChange(dc);
     }
     function schedule() {
@@ -77,6 +87,10 @@
     }
     input.addEventListener('input', schedule);
     input.addEventListener('change', refresh);
+    if (diariaInput) {
+      diariaInput.addEventListener('input', schedule);
+      diariaInput.addEventListener('change', refresh);
+    }
     refresh();
   }
 

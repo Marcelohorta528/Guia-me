@@ -90,10 +90,16 @@ function rowFromDb(r) {
       r.taxa_aceite_metodo != null && r.taxa_aceite_metodo !== ''
         ? String(r.taxa_aceite_metodo)
         : null,
+    taxa_aceite_prestador_metodo:
+      r.taxa_aceite_prestador_metodo != null && r.taxa_aceite_prestador_metodo !== ''
+        ? String(r.taxa_aceite_prestador_metodo)
+        : null,
     taxa_aceite_plataforma_reais:
       r.taxa_aceite_plataforma_reais != null ? Number(r.taxa_aceite_plataforma_reais) : null,
     taxa_aceite_deslocamento_reais:
       r.taxa_aceite_deslocamento_reais != null ? Number(r.taxa_aceite_deslocamento_reais) : null,
+    taxa_aceite_diaria_reais:
+      r.taxa_aceite_diaria_reais != null ? Number(r.taxa_aceite_diaria_reais) : null,
     taxa_aceite_km_faturados:
       r.taxa_aceite_km_faturados != null ? Number(r.taxa_aceite_km_faturados) : null,
     taxa_aceite_total_reais:
@@ -200,8 +206,10 @@ export async function initOrdersSqlite() {
   addCol('taxa_aceite_reais', 'REAL');
   addCol('taxa_aceite_cobrada_at', 'TEXT');
   addCol('taxa_aceite_metodo', 'TEXT');
+  addCol('taxa_aceite_prestador_metodo', 'TEXT');
   addCol('taxa_aceite_plataforma_reais', 'REAL');
   addCol('taxa_aceite_deslocamento_reais', 'REAL');
+  addCol('taxa_aceite_diaria_reais', 'REAL');
   addCol('taxa_aceite_km_faturados', 'REAL');
   addCol('taxa_aceite_total_reais', 'REAL');
   addCol('taxa_prestador_fechamento_usd', 'REAL');
@@ -314,8 +322,8 @@ export function sqliteListAllOrders() {
       'km_deslocamento, taxa_deslocamento_reais, taxa_deslocamento_por_km, valor_servico, comissao_app_percent, comissao_app_reais, valor_liquido_prestador_servico, ' +
       'prestador_id, aceito_at, fechamento_cliente_at, fechamento_prestador_at, concluido_at, ' +
       'orcamento_valor, orcamento_observacao, orcamento_enviado_at, orcamento_comissao_app_percent, orcamento_comissao_app_reais, orcamento_liquido_prestador, ' +
-      'taxa_aceite_usd, taxa_aceite_cambio_usd_brl, taxa_aceite_reais, taxa_aceite_cobrada_at, taxa_aceite_metodo, ' +
-      'taxa_aceite_plataforma_reais, taxa_aceite_deslocamento_reais, taxa_aceite_km_faturados, taxa_aceite_total_reais, ' +
+      'taxa_aceite_usd, taxa_aceite_cambio_usd_brl, taxa_aceite_reais, taxa_aceite_cobrada_at, taxa_aceite_metodo, taxa_aceite_prestador_metodo, ' +
+      'taxa_aceite_plataforma_reais, taxa_aceite_deslocamento_reais, taxa_aceite_diaria_reais, taxa_aceite_km_faturados, taxa_aceite_total_reais, ' +
       'taxa_prestador_fechamento_usd, taxa_prestador_fechamento_cambio_usd_brl, taxa_prestador_fechamento_reais, taxa_prestador_fechamento_cobrada_at, taxa_prestador_fechamento_metodo ' +
       'FROM orders ORDER BY datetime(created_at) DESC'
   );
@@ -335,10 +343,10 @@ export function sqliteInsertOrder(row) {
       prestador_id, aceito_at, fechamento_cliente_at, fechamento_prestador_at, concluido_at,
       orcamento_valor, orcamento_observacao, orcamento_enviado_at,
       orcamento_comissao_app_percent, orcamento_comissao_app_reais, orcamento_liquido_prestador,
-      taxa_aceite_usd, taxa_aceite_cambio_usd_brl, taxa_aceite_reais, taxa_aceite_cobrada_at, taxa_aceite_metodo,
-      taxa_aceite_plataforma_reais, taxa_aceite_deslocamento_reais, taxa_aceite_km_faturados, taxa_aceite_total_reais,
+      taxa_aceite_usd, taxa_aceite_cambio_usd_brl, taxa_aceite_reais, taxa_aceite_cobrada_at, taxa_aceite_metodo, taxa_aceite_prestador_metodo,
+      taxa_aceite_plataforma_reais, taxa_aceite_deslocamento_reais, taxa_aceite_diaria_reais, taxa_aceite_km_faturados, taxa_aceite_total_reais,
       taxa_prestador_fechamento_usd, taxa_prestador_fechamento_cambio_usd_brl, taxa_prestador_fechamento_reais, taxa_prestador_fechamento_cobrada_at, taxa_prestador_fechamento_metodo
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     String(row.id),
     String(row.clienteId),
@@ -395,8 +403,8 @@ const SQL_ORDER_SELECT =
   'km_deslocamento, taxa_deslocamento_reais, taxa_deslocamento_por_km, valor_servico, comissao_app_percent, comissao_app_reais, valor_liquido_prestador_servico, ' +
   'prestador_id, aceito_at, fechamento_cliente_at, fechamento_prestador_at, concluido_at, ' +
   'orcamento_valor, orcamento_observacao, orcamento_enviado_at, orcamento_comissao_app_percent, orcamento_comissao_app_reais, orcamento_liquido_prestador, ' +
-  'taxa_aceite_usd, taxa_aceite_cambio_usd_brl, taxa_aceite_reais, taxa_aceite_cobrada_at, taxa_aceite_metodo, ' +
-  'taxa_aceite_plataforma_reais, taxa_aceite_deslocamento_reais, taxa_aceite_km_faturados, taxa_aceite_total_reais, ' +
+  'taxa_aceite_usd, taxa_aceite_cambio_usd_brl, taxa_aceite_reais, taxa_aceite_cobrada_at, taxa_aceite_metodo, taxa_aceite_prestador_metodo, ' +
+  'taxa_aceite_plataforma_reais, taxa_aceite_deslocamento_reais, taxa_aceite_diaria_reais, taxa_aceite_km_faturados, taxa_aceite_total_reais, ' +
   'taxa_prestador_fechamento_usd, taxa_prestador_fechamento_cambio_usd_brl, taxa_prestador_fechamento_reais, taxa_prestador_fechamento_cobrada_at, taxa_prestador_fechamento_metodo ' +
   'FROM orders WHERE id = ?';
 
@@ -413,11 +421,15 @@ function feeSqlValues(row) {
       : null,
     row.taxa_aceite_cobrada_at != null ? String(row.taxa_aceite_cobrada_at) : null,
     row.taxa_aceite_metodo != null ? String(row.taxa_aceite_metodo) : null,
+    row.taxa_aceite_prestador_metodo != null ? String(row.taxa_aceite_prestador_metodo) : null,
     row.taxa_aceite_plataforma_reais != null && Number.isFinite(Number(row.taxa_aceite_plataforma_reais))
       ? Number(row.taxa_aceite_plataforma_reais)
       : null,
     row.taxa_aceite_deslocamento_reais != null && Number.isFinite(Number(row.taxa_aceite_deslocamento_reais))
       ? Number(row.taxa_aceite_deslocamento_reais)
+      : null,
+    row.taxa_aceite_diaria_reais != null && Number.isFinite(Number(row.taxa_aceite_diaria_reais))
+      ? Number(row.taxa_aceite_diaria_reais)
       : null,
     row.taxa_aceite_km_faturados != null && Number.isFinite(Number(row.taxa_aceite_km_faturados))
       ? Number(row.taxa_aceite_km_faturados)
@@ -467,8 +479,8 @@ export function sqliteSaveOrder(row) {
       km_deslocamento = ?, taxa_deslocamento_reais = ?, taxa_deslocamento_por_km = ?, valor_servico = ?, comissao_app_percent = ?, comissao_app_reais = ?, valor_liquido_prestador_servico = ?,
       prestador_id = ?, aceito_at = ?, fechamento_cliente_at = ?, fechamento_prestador_at = ?, concluido_at = ?,
       orcamento_valor = ?, orcamento_observacao = ?, orcamento_enviado_at = ?, orcamento_comissao_app_percent = ?, orcamento_comissao_app_reais = ?, orcamento_liquido_prestador = ?,
-      taxa_aceite_usd = ?, taxa_aceite_cambio_usd_brl = ?, taxa_aceite_reais = ?, taxa_aceite_cobrada_at = ?, taxa_aceite_metodo = ?,
-      taxa_aceite_plataforma_reais = ?, taxa_aceite_deslocamento_reais = ?, taxa_aceite_km_faturados = ?, taxa_aceite_total_reais = ?,
+      taxa_aceite_usd = ?, taxa_aceite_cambio_usd_brl = ?, taxa_aceite_reais = ?, taxa_aceite_cobrada_at = ?, taxa_aceite_metodo = ?, taxa_aceite_prestador_metodo = ?,
+      taxa_aceite_plataforma_reais = ?, taxa_aceite_deslocamento_reais = ?, taxa_aceite_diaria_reais = ?, taxa_aceite_km_faturados = ?, taxa_aceite_total_reais = ?,
       taxa_prestador_fechamento_usd = ?, taxa_prestador_fechamento_cambio_usd_brl = ?, taxa_prestador_fechamento_reais = ?, taxa_prestador_fechamento_cobrada_at = ?, taxa_prestador_fechamento_metodo = ?
     WHERE id = ?
   `).run(
